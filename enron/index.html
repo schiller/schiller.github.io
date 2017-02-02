@@ -1,158 +1,44 @@
-<!DOCTYPE html>
-<html>
-
-  <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <!-- SEO -->
-  <!-- Begin Jekyll SEO tag v2.1.0 -->
-<title>Investigating the Enron Fraud with Machine Learning - Luiz Schiller</title>
-<meta property="og:title" content="Investigating the Enron Fraud with Machine Learning" />
-<meta name="description" content="Building a person of interest identifier based on financial and email data made public as a result of the Enron scandal, using machine learning." />
-<meta property="og:description" content="Building a person of interest identifier based on financial and email data made public as a result of the Enron scandal, using machine learning." />
-<link rel="canonical" href="http://luizschiller.com/enron/" />
-<meta property="og:url" content="http://luizschiller.com/enron/" />
-<meta property="og:site_name" content="Luiz Schiller" />
-<meta property="og:type" content="article" />
-<meta property="article:published_time" content="2016-12-22T00:00:00-02:00" />
-<script type="application/ld+json">
-{"@context": "http://schema.org",
+<!DOCTYPE html><html><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1"><title>Investigating the Enron Fraud with Machine Learning - Luiz Schiller</title><meta property=og:title content="Investigating the Enron Fraud with Machine Learning"><meta name=description content="Building a person of interest identifier based on financial and email data made public as a result of the Enron scandal, using machine learning."><meta property=og:description content="Building a person of interest identifier based on financial and email data made public as a result of the Enron scandal, using machine learning."><link rel=canonical href=http://luizschiller.com/enron/ ><meta property=og:url content=http://luizschiller.com/enron/ ><meta property=og:site_name content="Luiz Schiller"><meta property=og:type content=article><meta property=article:published_time content=2016-12-22T00:00:00-02:00><script type=application/ld+json>{"@context": "http://schema.org",
 "@type": "BlogPosting",
 "headline": "Investigating the Enron Fraud with Machine Learning",
 "datePublished": "2016-12-22T00:00:00-02:00",
 "description": "Building a person of interest identifier based on financial and email data made public as a result of the Enron scandal, using machine learning.",
-"url": "http://luizschiller.com/enron/"}</script>
-<!-- End Jekyll SEO tag -->
+"url": "http://luizschiller.com/enron/"}</script><link rel=stylesheet href=/assets/stylesheets/style-764afa6a2a.min.css><link rel=apple-touch-icon-precomposed sizes=144x144 href=/assets/images/touch/apple-touch-icon-144-precomposed.png><link rel="shortcut icon" href=/assets/favicon.ico><link type=application/atom+xml rel=alternate href=http://luizschiller.com/feed.xml title="Luiz Schiller"></head><body><header class=site-header><div class=wrapper><a class=site-title href=/ >Luiz Schiller</a><nav class=site-nav><a href=# class=menu-icon><svg viewBox="0 0 18 15"><path fill=#424242 d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/><path fill=#424242 d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/><path fill=#424242 d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/></svg></a><div class=trigger><a class=page-link href=/about/ >About</a></div></nav></div></header><div class=page-content><div class=wrapper><article class=post itemscope itemtype=http://schema.org/BlogPosting><header class=post-header><h1 class=post-title itemprop="name headline">Investigating the Enron Fraud with Machine Learning</h1><p class=post-meta><time datetime=2016-12-22T00:00:00-02:00 itemprop=datePublished>Dec 22, 2016</time></p></header><div class=post-content itemprop=articleBody><h4>Udacity Data Analyst Nanodegree</h4><h2>Overview</h2><p>In 2000, Enron was one of the largest companies in the United States. By 2002, it had collapsed into bankruptcy due to widespread corporate fraud. In the resulting Federal investigation, a significant amount of typically confidential information entered into the public record, including tens of thousands of emails and detailed financial data for top executives.</p><blockquote><p>Summarize for us the goal of this project and how machine learning is useful in trying to accomplish it. As part of your answer, give some background on the dataset and how it can be used to answer the project question. Were there any outliers in the data when you got it, and how did you handle those?</p></blockquote><p>The goal of this project is to build a person of interest (POI, which means an individual who was indicted, reached a settlement or plea deal with the government, or testified in exchange for prosecution immunity) identifier based on financial and email data made public as a result of the Enron scandal. Machine learning is an excellent tool for this kind of classification task as it can use patterns discovered from labeled data to infer the classes of new observations.</p><p>Our dataset combines the public record of Enron emails and financial data with a hand-generated list of POI&rsquo;s in the fraud case.</p><h2>Data Exploration</h2><div class=highlight><pre><code class=language-python data-lang=python><span class=kn>import</span> <span class=nn>sys</span>
+<span class=kn>import</span> <span class=nn>cPickle</span> <span class=kn>as</span> <span class=nn>pickle</span>
+<span class=kn>import</span> <span class=nn>numpy</span> <span class=kn>as</span> <span class=nn>np</span>
+<span class=kn>import</span> <span class=nn>pandas</span> <span class=kn>as</span> <span class=nn>pd</span>
+<span class=kn>import</span> <span class=nn>matplotlib.pyplot</span> <span class=kn>as</span> <span class=nn>plt</span>
+<span class=kn>import</span> <span class=nn>seaborn</span> <span class=kn>as</span> <span class=nn>sns</span>
 
+<span class=kn>from</span> <span class=nn>sklearn.cross_validation</span> <span class=kn>import</span> <span class=n>train_test_split</span>
+<span class=kn>from</span> <span class=nn>sklearn.pipeline</span> <span class=kn>import</span> <span class=n>Pipeline</span>
+<span class=kn>from</span> <span class=nn>sklearn.model_selection</span> <span class=kn>import</span> <span class=n>GridSearchCV</span><span class=p>,</span> <span class=n>StratifiedShuffleSplit</span><span class=p>,</span> <span class=n>cross_val_score</span>
+<span class=kn>from</span> <span class=nn>sklearn.preprocessing</span> <span class=kn>import</span> <span class=n>StandardScaler</span>
+<span class=kn>from</span> <span class=nn>sklearn.decomposition</span> <span class=kn>import</span> <span class=n>PCA</span>
+<span class=kn>from</span> <span class=nn>sklearn.feature_selection</span> <span class=kn>import</span> <span class=n>SelectKBest</span>
+<span class=kn>from</span> <span class=nn>sklearn.naive_bayes</span> <span class=kn>import</span> <span class=n>GaussianNB</span>
+<span class=kn>from</span> <span class=nn>sklearn.svm</span> <span class=kn>import</span> <span class=n>SVC</span>
+<span class=kn>from</span> <span class=nn>sklearn.tree</span> <span class=kn>import</span> <span class=n>DecisionTreeClassifier</span>
+<span class=kn>from</span> <span class=nn>sklearn.metrics</span> <span class=kn>import</span> <span class=n>accuracy_score</span><span class=p>,</span> <span class=n>precision_score</span><span class=p>,</span> <span class=n>recall_score</span><span class=p>,</span> <span class=n>f1_score</span>
 
-  <!-- CSS -->
-  <!-- inject:css -->
-  <link rel="stylesheet" href="/assets/stylesheets/style.css">
-  <!-- endinject -->
+<span class=n>sys</span><span class=o>.</span><span class=n>path</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=s>"../tools/"</span><span class=p>)</span>
 
-  <!-- Icons -->
-  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/assets/images/touch/apple-touch-icon-144-precomposed.png">
-  <link rel="shortcut icon" href="/assets/favicon.ico">
+<span class=kn>from</span> <span class=nn>feature_format</span> <span class=kn>import</span> <span class=n>featureFormat</span><span class=p>,</span> <span class=n>targetFeatureSplit</span>
+<span class=kn>from</span> <span class=nn>tester</span> <span class=kn>import</span> <span class=n>dump_classifier_and_data</span><span class=p>,</span> <span class=n>test_classifier</span>
 
-  <!-- RSS -->
-  <link type="application/atom+xml" rel="alternate" href="http://luizschiller.com/feed.xml" title="Luiz Schiller" />
-</head>
+<span class=o>%</span><span class=n>matplotlib</span> <span class=n>inline</span>
+<span class=n>pd</span><span class=o>.</span><span class=n>set_option</span><span class=p>(</span><span class=s>'display.max_columns'</span><span class=p>,</span> <span class=bp>None</span><span class=p>)</span>
 
+<span class=c>### Load the dictionary containing the dataset</span>
+<span class=k>with</span> <span class=nb>open</span><span class=p>(</span><span class=s>"final_project_dataset.pkl"</span><span class=p>,</span> <span class=s>"r"</span><span class=p>)</span> <span class=k>as</span> <span class=n>data_file</span><span class=p>:</span>
+    <span class=n>data_dict</span> <span class=o>=</span> <span class=n>pickle</span><span class=o>.</span><span class=n>load</span><span class=p>(</span><span class=n>data_file</span><span class=p>)</span>
 
-  <body>
+<span class=c># dict to dataframe</span>
+<span class=n>df</span> <span class=o>=</span> <span class=n>pd</span><span class=o>.</span><span class=n>DataFrame</span><span class=o>.</span><span class=n>from_dict</span><span class=p>(</span><span class=n>data_dict</span><span class=p>,</span> <span class=n>orient</span><span class=o>=</span><span class=s>'index'</span><span class=p>)</span>
+<span class=n>df</span><span class=o>.</span><span class=n>replace</span><span class=p>(</span><span class=s>'NaN'</span><span class=p>,</span> <span class=n>np</span><span class=o>.</span><span class=n>nan</span><span class=p>,</span> <span class=n>inplace</span> <span class=o>=</span> <span class=bp>True</span><span class=p>)</span>
 
-    <header class="site-header">
-
-  <div class="wrapper">
-
-    <a class="site-title" href="/">Luiz Schiller</a>
-
-    <nav class="site-nav">
-      <a href="#" class="menu-icon">
-        <svg viewBox="0 0 18 15">
-          <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
-          <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
-          <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
-        </svg>
-      </a>
-
-      <div class="trigger">
-        
-          
-        
-          
-            
-              <a class="page-link" href="/about/">About</a>
-            
-          
-        
-          
-            
-          
-        
-          
-            
-          
-        
-          
-            
-          
-        
-          
-            
-          
-        
-      </div>
-    </nav>
-
-  </div>
-
-</header>
-
-
-    <div class="page-content">
-      <div class="wrapper">
-        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
-
-  <header class="post-header">
-    <h1 class="post-title" itemprop="name headline">Investigating the Enron Fraud with Machine Learning</h1>
-    <p class="post-meta"><time datetime="2016-12-22T00:00:00-02:00" itemprop="datePublished">Dec 22, 2016</time></p>
-  </header>
-
-  <div class="post-content" itemprop="articleBody">
-    <h4>Udacity Data Analyst Nanodegree</h4>
-
-<h2>Overview</h2>
-
-<p>In 2000, Enron was one of the largest companies in the United States. By 2002, it had collapsed into bankruptcy due to widespread corporate fraud. In the resulting Federal investigation, a significant amount of typically confidential information entered into the public record, including tens of thousands of emails and detailed financial data for top executives.</p>
-
-<blockquote>
-<p>Summarize for us the goal of this project and how machine learning is useful in trying to accomplish it. As part of your answer, give some background on the dataset and how it can be used to answer the project question. Were there any outliers in the data when you got it, and how did you handle those?</p>
-</blockquote>
-
-<p>The goal of this project is to build a person of interest (POI, which means an individual who was indicted, reached a settlement or plea deal with the government, or testified in exchange for prosecution immunity) identifier based on financial and email data made public as a result of the Enron scandal. Machine learning is an excellent tool for this kind of classification task as it can use patterns discovered from labeled data to infer the classes of new observations.</p>
-
-<p>Our dataset combines the public record of Enron emails and financial data with a hand-generated list of POI&rsquo;s in the fraud case.</p>
-
-<h2>Data Exploration</h2>
-<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">cPickle</span> <span class="kn">as</span> <span class="nn">pickle</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">seaborn</span> <span class="kn">as</span> <span class="nn">sns</span>
-
-<span class="kn">from</span> <span class="nn">sklearn.cross_validation</span> <span class="kn">import</span> <span class="n">train_test_split</span>
-<span class="kn">from</span> <span class="nn">sklearn.pipeline</span> <span class="kn">import</span> <span class="n">Pipeline</span>
-<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">GridSearchCV</span><span class="p">,</span> <span class="n">StratifiedShuffleSplit</span><span class="p">,</span> <span class="n">cross_val_score</span>
-<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">StandardScaler</span>
-<span class="kn">from</span> <span class="nn">sklearn.decomposition</span> <span class="kn">import</span> <span class="n">PCA</span>
-<span class="kn">from</span> <span class="nn">sklearn.feature_selection</span> <span class="kn">import</span> <span class="n">SelectKBest</span>
-<span class="kn">from</span> <span class="nn">sklearn.naive_bayes</span> <span class="kn">import</span> <span class="n">GaussianNB</span>
-<span class="kn">from</span> <span class="nn">sklearn.svm</span> <span class="kn">import</span> <span class="n">SVC</span>
-<span class="kn">from</span> <span class="nn">sklearn.tree</span> <span class="kn">import</span> <span class="n">DecisionTreeClassifier</span>
-<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">accuracy_score</span><span class="p">,</span> <span class="n">precision_score</span><span class="p">,</span> <span class="n">recall_score</span><span class="p">,</span> <span class="n">f1_score</span>
-
-<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">"../tools/"</span><span class="p">)</span>
-
-<span class="kn">from</span> <span class="nn">feature_format</span> <span class="kn">import</span> <span class="n">featureFormat</span><span class="p">,</span> <span class="n">targetFeatureSplit</span>
-<span class="kn">from</span> <span class="nn">tester</span> <span class="kn">import</span> <span class="n">dump_classifier_and_data</span><span class="p">,</span> <span class="n">test_classifier</span>
-
-<span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
-<span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s">'display.max_columns'</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
-
-<span class="c">### Load the dictionary containing the dataset</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s">"final_project_dataset.pkl"</span><span class="p">,</span> <span class="s">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">data_file</span><span class="p">:</span>
-    <span class="n">data_dict</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">data_file</span><span class="p">)</span>
-
-<span class="c"># dict to dataframe</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">data_dict</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s">'index'</span><span class="p">)</span>
-<span class="n">df</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">'NaN'</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">inplace</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
-
-<span class="n">df</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
-</code></pre></div><div class="highlight"><pre><code class="language-" data-lang="">C:\Users\schil\Anaconda2\lib\site-packages\sklearn\cross_validation.py:44: DeprecationWarning: This module was deprecated in version 0.18 in favor of the model_selection module into which all the refactored classes and functions are moved. Also note that the interface of the new CV iterators are different from that of this module. This module will be removed in 0.20.
+<span class=n>df</span><span class=o>.</span><span class=n>info</span><span class=p>()</span>
+</code></pre></div><div class=highlight><pre><code class=language- data-lang="">C:\Users\schil\Anaconda2\lib\site-packages\sklearn\cross_validation.py:44: DeprecationWarning: This module was deprecated in version 0.18 in favor of the model_selection module into which all the refactored classes and functions are moved. Also note that the interface of the new CV iterators are different from that of this module. This module will be removed in 0.20.
   "This module will be removed in 0.20.", DeprecationWarning)
 
 
@@ -182,342 +68,99 @@ email_address                111 non-null object
 from_poi_to_this_person      86 non-null float64
 dtypes: bool(1), float64(19), object(1)
 memory usage: 24.1+ KB
-</code></pre></div><div class="highlight"><pre><code class="language-python" data-lang="python"><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s">'poi'</span><span class="p">]])</span>
-</code></pre></div><div class="highlight"><pre><code class="language-" data-lang="">18
-</code></pre></div>
-<p>There are 146 observations and 21 variables in our dataset - 6 email features, 14 financial features and 1 POI label - and they are divided between 18 POI&rsquo;s and 128 non-POI&rsquo;s.</p>
+</code></pre></div><div class=highlight><pre><code class=language-python data-lang=python><span class=nb>len</span><span class=p>(</span><span class=n>df</span><span class=p>[</span><span class=n>df</span><span class=p>[</span><span class=s>'poi'</span><span class=p>]])</span>
+</code></pre></div><div class=highlight><pre><code class=language- data-lang="">18
+</code></pre></div><p>There are 146 observations and 21 variables in our dataset - 6 email features, 14 financial features and 1 POI label - and they are divided between 18 POI&rsquo;s and 128 non-POI&rsquo;s.</p><p>There are a lot of missing values, so, before the data is fed into the machine learning models they are going to be filled by zeros.</p><h2>Outlier Investigation</h2><div class=highlight><pre><code class=language-python data-lang=python><span class=n>df</span><span class=o>.</span><span class=n>plot</span><span class=o>.</span><span class=n>scatter</span><span class=p>(</span><span class=n>x</span> <span class=o>=</span> <span class=s>'salary'</span><span class=p>,</span> <span class=n>y</span> <span class=o>=</span> <span class=s>'bonus'</span><span class=p>)</span>
+</code></pre></div><div class=highlight><pre><code class=language- data-lang="">&lt;matplotlib.axes._subplots.AxesSubplot at 0x2d0fb38&gt;
+</code></pre></div><p><img src=/assets/images/enron/output_4_1.png alt=png></p><p>There is a salary bigger than 2.5 *10<sup>7</sup> 🤔. It seems too much even for Enron. Let&rsquo;s find out whoose is it.</p><div class=highlight><pre><code class=language-python data-lang=python><span class=n>df</span><span class=p>[</span><span class=s>'salary'</span><span class=p>]</span><span class=o>.</span><span class=n>idxmax</span><span class=p>()</span>
+</code></pre></div><div class=highlight><pre><code class=language- data-lang="">'TOTAL'
+</code></pre></div><p>This huge salary is the TOTAL of the salaries of the listed employees, so I&rsquo;m going to remove it.</p><div class=highlight><pre><code class=language-python data-lang=python><span class=n>df</span><span class=o>.</span><span class=n>drop</span><span class=p>(</span><span class=s>'TOTAL'</span><span class=p>,</span> <span class=n>inplace</span> <span class=o>=</span> <span class=bp>True</span><span class=p>)</span>
+<span class=n>df</span><span class=o>.</span><span class=n>plot</span><span class=o>.</span><span class=n>scatter</span><span class=p>(</span><span class=n>x</span> <span class=o>=</span> <span class=s>'salary'</span><span class=p>,</span> <span class=n>y</span> <span class=o>=</span> <span class=s>'bonus'</span><span class=p>)</span>
+</code></pre></div><div class=highlight><pre><code class=language- data-lang="">&lt;matplotlib.axes._subplots.AxesSubplot at 0xc7f6ef0&gt;
+</code></pre></div><p><img src=/assets/images/enron/output_8_1.png alt=png></p><h2>Create New Features</h2><blockquote><p>What features did you end up using in your POI identifier, and what selection process did you use to pick them? Did you have to do any scaling? Why or why not? As part of the assignment, you should attempt to engineer your own feature that does not come ready-made in the dataset &ndash; explain what feature you tried to make, and the rationale behind it. (You do not necessarily have to use it in the final analysis, only engineer and test it.) In your feature selection step, if you used an algorithm like a decision tree, please also give the feature importances of the features that you use, and if you used an automated feature selection function like SelectKBest, please report the feature scores and reasons for your choice of parameter values.</p></blockquote><p>In our dataset we&rsquo;ve got the number of emails sent to POI&rsquo;s and received from POI&rsquo;s for most of the employees. However, if an employee sends or receives a lot of emails in general, it is likely that the quantity of them sent or received from POI&rsquo;s would be large as well. This is why we are creating these two new features: - fraction of &lsquo;to_messages&rsquo; received from a POI; - fraction of &lsquo;from_messages&rsquo; sent to a POI.</p><p>They can indicate if the majority of an employee&rsquo;s emails were exchanged with POI&rsquo;s. In fact, POI&rsquo;s are grouped together in a scatter plot of the two new features.</p><div class=highlight><pre><code class=language-python data-lang=python><span class=n>df</span><span class=p>[</span><span class=s>'fraction_from_poi'</span><span class=p>]</span> <span class=o>=</span> <span class=n>df</span><span class=p>[</span><span class=s>'from_poi_to_this_person'</span><span class=p>]</span> <span class=o>/</span> <span class=n>df</span><span class=p>[</span><span class=s>'to_messages'</span><span class=p>]</span>
+<span class=n>df</span><span class=p>[</span><span class=s>'fraction_to_poi'</span><span class=p>]</span> <span class=o>=</span> <span class=n>df</span><span class=p>[</span><span class=s>'from_this_person_to_poi'</span><span class=p>]</span> <span class=o>/</span> <span class=n>df</span><span class=p>[</span><span class=s>'from_messages'</span><span class=p>]</span>
 
-<p>There are a lot of missing values, so, before the data is fed into the machine learning models they are going to be filled by zeros.</p>
+<span class=n>ax</span> <span class=o>=</span> <span class=n>df</span><span class=p>[</span><span class=n>df</span><span class=p>[</span><span class=s>'poi'</span><span class=p>]</span> <span class=o>==</span> <span class=bp>False</span><span class=p>]</span><span class=o>.</span><span class=n>plot</span><span class=o>.</span><span class=n>scatter</span><span class=p>(</span><span class=n>x</span><span class=o>=</span><span class=s>'fraction_from_poi'</span><span class=p>,</span> <span class=n>y</span><span class=o>=</span><span class=s>'fraction_to_poi'</span><span class=p>,</span> <span class=n>color</span><span class=o>=</span><span class=s>'blue'</span><span class=p>,</span> <span class=n>label</span><span class=o>=</span><span class=s>'non-poi'</span><span class=p>)</span>
+<span class=n>df</span><span class=p>[</span><span class=n>df</span><span class=p>[</span><span class=s>'poi'</span><span class=p>]</span> <span class=o>==</span> <span class=bp>True</span><span class=p>]</span><span class=o>.</span><span class=n>plot</span><span class=o>.</span><span class=n>scatter</span><span class=p>(</span><span class=n>x</span><span class=o>=</span><span class=s>'fraction_from_poi'</span><span class=p>,</span> <span class=n>y</span><span class=o>=</span><span class=s>'fraction_to_poi'</span><span class=p>,</span> <span class=n>color</span><span class=o>=</span><span class=s>'red'</span><span class=p>,</span> <span class=n>label</span><span class=o>=</span><span class=s>'poi'</span><span class=p>,</span> <span class=n>ax</span><span class=o>=</span><span class=n>ax</span><span class=p>)</span>
+</code></pre></div><div class=highlight><pre><code class=language- data-lang="">&lt;matplotlib.axes._subplots.AxesSubplot at 0xc9a8898&gt;
+</code></pre></div><p><img src=/assets/images/enron/output_10_1.png alt=png></p><p>Comparing the results for the final chosen model with and without our new engineered features, we get the following results:</p><table><thead><tr><th>New Features</th><th>Accuracy</th><th>Precision</th><th>Recall</th><th>F1</th></tr></thead><tbody><tr><td>yes</td><td>0.879</td><td>0.543</td><td>0.325</td><td>0.380</td></tr><tr><td>no</td><td>0.879</td><td>0.543</td><td>0.325</td><td>0.380</td></tr></tbody></table><p>Surprisingly the results were the same with and without the two engineered features.</p><h2>Properly Scale Features</h2><p>Since we are going to perform a Principal Component Analysis (PCA) to reduce dimensionality later on, and many machine learning models ask for scaled features, a standardization of the features is going to be tested as the first step of our classification pipeline. If it improves the evaluation score of the model then the chosen final model will have this scaling step.</p><p>To acomplish it I use the StandardScaler module from scikit learn, which standardizes features by removing the mean and scaling to unit variance.</p><h2>Intelligently Select Features</h2><p>The next step in the pipeline is selecting the features that convey the most information to our model.</p><p>Leaving some features behind has some advantages, like reducing the noise in the classification, and saving processing time, since there are less features to compute.</p><p>The chosen method was scikit learn&rsquo;s SelectKBest using f_classif as scoring function. The f_classif function computes the ANOVA F-value between labels and features for classification tasks.</p><p>A few feature counts were tested with the aid of a grid search (it will be discussed in a later section), and finally, for the chosen model, 15 most important features were chosen:</p><table><thead><tr><th>feature</th><th>score</th></tr></thead><tbody><tr><td>exercised_stock_options</td><td>22.84690056</td></tr><tr><td>total_stock_value</td><td>22.33456614</td></tr><tr><td>salary</td><td>16.96091624</td></tr><tr><td>bonus</td><td>15.49141455</td></tr><tr><td>fraction_to_poi</td><td>13.80595013</td></tr><tr><td>restricted_stock</td><td>8.61001147</td></tr><tr><td>total_payments</td><td>8.50623857</td></tr><tr><td>loan_advances</td><td>7.3499902</td></tr><tr><td>shared_receipt_with_poi</td><td>7.06339857</td></tr><tr><td>deferred_income</td><td>6.19466529</td></tr><tr><td>long_term_incentive</td><td>5.66331492</td></tr><tr><td>expenses</td><td>5.28384553</td></tr><tr><td>from_poi_to_this_person</td><td>5.05036916</td></tr><tr><td>other</td><td>4.42180729</td></tr><tr><td>fraction_from_poi</td><td>3.57449894</td></tr></tbody></table><p>The output of the feature selection was used as input to PCA. The features were projected to a lower dimensional space, reducing dimensionality from 15 features to 6 principal components in our final chosen model.</p><h2>Pick an Algorithm</h2><blockquote><p>What algorithm did you end up using? What other one(s) did you try? How did model performance differ between algorithms?</p></blockquote><p>I ended up using a Gaussian Naïve-Bayes, which scored 0.366984126984 on the nested cross-validation f1. The algorithms tested were: - Gaussian Naïve-Bayes; - Support Vector Machines; - Decision Tree Classifier.</p><p>The scores obtained for them are as follows:</p><table><thead><tr><th>Algorithm</th><th>Nested CV f1</th></tr></thead><tbody><tr><td>Gaussian Naïve-Bayes</td><td>0.366984126984</td></tr><tr><td>Support Vector Machines</td><td>0.287132034632</td></tr><tr><td>Decision Tree Classifier</td><td>0.228430049483</td></tr></tbody></table><p>Although the other tested models scored better on other evaluation metrics, it is the nested cross-validation score that best depicts how the model generalizes on unseen data, therefore the Gaussian Naïve-Bayes was the chosen model.</p><h2>Tune the Algorithm</h2><blockquote><p>What does it mean to tune the parameters of an algorithm, and what can happen if you don’t do this well? How did you tune the parameters of your particular algorithm? (Some algorithms do not have parameters that you need to tune &ndash; if this is the case for the one you picked, identify and briefly explain how you would have done it for the model that was not your final choice or a different model that does utilize parameter tuning, e.g. a decision tree classifier).</p></blockquote><p>A crucial part of selecting a machine learning algorithm is to adjust it&rsquo;s parameters in order to maximize the evaluation metrics. If the parameters are not properly tuned, the algorithm can underfit or overfit the data, hence producing suboptimal results.</p><p>To tune the algorithms, I used the GridSearchCV tool provided in scikit learn. It exhaustively searches for the best parameters between the ones specified in an array of possibilities. The parameters are chosen in order to optimize the chosen scoring function, in our case, f1 (the evaluation metrics will be better addressed on the &lsquo;Usage of Evaluation Metrics&rsquo; section).</p><h2>Validation Strategy</h2><blockquote><p>What is validation, and what’s a classic mistake you can make if you do it wrong? How did you validate your analysis?</p></blockquote><p>Validation in machine learning consists of evaluating a model using data that was not touched during the training process. A classic mistake is to ignore this rule, hence obtaining overly optimistic results due to overfitting the training data, but very poor performance on unseen data.</p><p>It is a good practice to separate data in three parts: training, cross-validation and test sets. The model is tuned to maximize the evaluation score on the cross-validation set, and then the final model efficiency is measured on the test set.</p><p>Since there are too few observations for us to train and test the algorithms, in order to extract the most information from the data, the selected strategy to validate our model was a Nested Stratified Shuffle Split Cross-Validation.</p><p>In this strategy effectively uses a series of train/validation/test set splits. In the inner loop, the score is approximately maximized by fitting a model to each training set, and then directly maximized in selecting (hyper)parameters over the validation set. In the outer loop, generalization error is estimated by averaging test set scores over several dataset splits. All sets are picked randomly, but keeping the same proportion of class labels.</p><h2>Usage of Evaluation Metrics</h2><blockquote><p>Give at least 2 evaluation metrics and your average performance for each of them. Explain an interpretation of your metrics that says something human-understandable about your algorithm’s performance.</p></blockquote><p>For classification algorithms, some of the most common evaluation metrics are accuracy, precision, recall and the f1 score.</p><ul><li><p>Accuracy shows the ratio between right classifications and the total number of predicted labels. Since the POI/non-POI distribution is very uneven, accuracy does not mean much. A model that predicts always non-POI&rsquo;s would get an accuracy of 87.6%, which is an apparently good score for a terrible classifier.</p></li><li><p>Precision is the ratio of right classifications over all observations with a given predicted label. For example, the ratio of true POI&rsquo;s over all predicted POI&rsquo;s.</p></li><li><p>Recall is the ratio of right classifications over all observations that are truly of a given class. For example, the ratio of observations correctly labeled POI over all true POI&rsquo;s.</p></li><li><p>F1 is a way of balance precision and recall, and is given by the following formula:</p></li></ul><p>$$F1 = 2 * (precision * recall) / (precision + recall)$$</p><p>For the final selected model, the average scores were the following:</p><table><thead><tr><th>Model</th><th>Accuracy</th><th>Precision</th><th>Recall</th><th>F1</th></tr></thead><tbody><tr><td>GaussianNB</td><td>0.879310344828</td><td>0.543333333333</td><td>0.325</td><td>0.38</td></tr></tbody></table><h2>Additional Code</h2><div class=highlight><pre><code class=language-python data-lang=python><span class=c>### The first feature must be "poi".</span>
+<span class=n>features_list</span> <span class=o>=</span> <span class=p>[</span><span class=s>'poi'</span><span class=p>,</span> <span class=s>'salary'</span><span class=p>,</span> <span class=s>'bonus'</span><span class=p>,</span> <span class=s>'long_term_incentive'</span><span class=p>,</span> <span class=s>'deferred_income'</span><span class=p>,</span> <span class=s>'deferral_payments'</span><span class=p>,</span>
+                 <span class=s>'loan_advances'</span><span class=p>,</span> <span class=s>'other'</span><span class=p>,</span> <span class=s>'expenses'</span><span class=p>,</span> <span class=s>'director_fees'</span><span class=p>,</span> <span class=s>'total_payments'</span><span class=p>,</span> 
+                 <span class=s>'exercised_stock_options'</span><span class=p>,</span> <span class=s>'restricted_stock'</span><span class=p>,</span> <span class=s>'restricted_stock_deferred'</span><span class=p>,</span> 
+                 <span class=s>'total_stock_value'</span><span class=p>,</span> <span class=s>'to_messages'</span><span class=p>,</span> <span class=s>'from_messages'</span><span class=p>,</span> <span class=s>'from_this_person_to_poi'</span><span class=p>,</span> 
+                 <span class=s>'from_poi_to_this_person'</span><span class=p>,</span> <span class=s>'shared_receipt_with_poi'</span><span class=p>,</span> <span class=s>'fraction_from_poi'</span><span class=p>,</span> <span class=s>'fraction_to_poi'</span><span class=p>]</span>
 
-<h2>Outlier Investigation</h2>
-<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="s">'salary'</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="s">'bonus'</span><span class="p">)</span>
-</code></pre></div><div class="highlight"><pre><code class="language-" data-lang="">&lt;matplotlib.axes._subplots.AxesSubplot at 0x2d0fb38&gt;
-</code></pre></div>
-<p><img src="/assets/images/enron/output_4_1.png" alt="png"></p>
+<span class=c>### Load the dictionary containing the dataset</span>
+<span class=n>filled_df</span> <span class=o>=</span> <span class=n>df</span><span class=o>.</span><span class=n>fillna</span><span class=p>(</span><span class=n>value</span><span class=o>=</span><span class=s>'NaN'</span><span class=p>)</span> <span class=c># featureFormat expects 'NaN' strings</span>
+<span class=n>data_dict</span> <span class=o>=</span> <span class=n>filled_df</span><span class=o>.</span><span class=n>to_dict</span><span class=p>(</span><span class=n>orient</span><span class=o>=</span><span class=s>'index'</span><span class=p>)</span>
 
-<p>There is a salary bigger than 2.5 *10<sup>7</sup> 🤔. It seems too much even for Enron. Let&rsquo;s find out whoose is it.</p>
-<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">df</span><span class="p">[</span><span class="s">'salary'</span><span class="p">]</span><span class="o">.</span><span class="n">idxmax</span><span class="p">()</span>
-</code></pre></div><div class="highlight"><pre><code class="language-" data-lang="">'TOTAL'
-</code></pre></div>
-<p>This huge salary is the TOTAL of the salaries of the listed employees, so I&rsquo;m going to remove it.</p>
-<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s">'TOTAL'</span><span class="p">,</span> <span class="n">inplace</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
-<span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="s">'salary'</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="s">'bonus'</span><span class="p">)</span>
-</code></pre></div><div class="highlight"><pre><code class="language-" data-lang="">&lt;matplotlib.axes._subplots.AxesSubplot at 0xc7f6ef0&gt;
-</code></pre></div>
-<p><img src="/assets/images/enron/output_8_1.png" alt="png"></p>
+<span class=c>### Store to my_dataset for easy export below.</span>
+<span class=n>my_dataset</span> <span class=o>=</span> <span class=n>data_dict</span>
 
-<h2>Create New Features</h2>
+<span class=c>### Extract features and labels from dataset for local testing</span>
+<span class=n>data</span> <span class=o>=</span> <span class=n>featureFormat</span><span class=p>(</span><span class=n>my_dataset</span><span class=p>,</span> <span class=n>features_list</span><span class=p>,</span> <span class=n>sort_keys</span> <span class=o>=</span> <span class=bp>True</span><span class=p>)</span>
+<span class=n>y</span><span class=p>,</span> <span class=n>X</span> <span class=o>=</span> <span class=n>targetFeatureSplit</span><span class=p>(</span><span class=n>data</span><span class=p>)</span>
+<span class=n>X</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>array</span><span class=p>(</span><span class=n>X</span><span class=p>)</span>
+<span class=n>y</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>array</span><span class=p>(</span><span class=n>y</span><span class=p>)</span>
 
-<blockquote>
-<p>What features did you end up using in your POI identifier, and what selection process did you use to pick them? Did you have to do any scaling? Why or why not? As part of the assignment, you should attempt to engineer your own feature that does not come ready-made in the dataset &ndash; explain what feature you tried to make, and the rationale behind it. (You do not necessarily have to use it in the final analysis, only engineer and test it.) In your feature selection step, if you used an algorithm like a decision tree, please also give the feature importances of the features that you use, and if you used an automated feature selection function like SelectKBest, please report the feature scores and reasons for your choice of parameter values.</p>
-</blockquote>
+<span class=c>### Cross-validation</span>
+<span class=n>sss</span> <span class=o>=</span> <span class=n>StratifiedShuffleSplit</span><span class=p>(</span><span class=n>n_splits</span><span class=o>=</span><span class=mi>10</span><span class=p>,</span> <span class=n>test_size</span><span class=o>=</span><span class=mf>0.2</span><span class=p>,</span> <span class=n>random_state</span><span class=o>=</span><span class=mi>42</span><span class=p>)</span>
 
-<p>In our dataset we&rsquo;ve got the number of emails sent to POI&rsquo;s and received from POI&rsquo;s for most of the employees. However, if an employee sends or receives a lot of emails in general, it is likely that the quantity of them sent or received from POI&rsquo;s would be large as well. This is why we are creating these two new features:
-- fraction of &lsquo;to_messages&rsquo; received from a POI;
-- fraction of &lsquo;from_messages&rsquo; sent to a POI.</p>
+<span class=n>SCALER</span> <span class=o>=</span> <span class=p>[</span><span class=bp>None</span><span class=p>,</span> <span class=n>StandardScaler</span><span class=p>()]</span>
+<span class=n>SELECTOR__K</span> <span class=o>=</span> <span class=p>[</span><span class=mi>10</span><span class=p>,</span> <span class=mi>13</span><span class=p>,</span> <span class=mi>15</span><span class=p>,</span> <span class=mi>18</span><span class=p>,</span> <span class=s>'all'</span><span class=p>]</span>
+<span class=n>REDUCER__N_COMPONENTS</span> <span class=o>=</span> <span class=p>[</span><span class=mi>2</span><span class=p>,</span> <span class=mi>4</span><span class=p>,</span> <span class=mi>6</span><span class=p>,</span> <span class=mi>8</span><span class=p>,</span> <span class=mi>10</span><span class=p>]</span>
+</code></pre></div><div class=highlight><pre><code class=language-python data-lang=python><span class=k>def</span> <span class=nf>evaluate_model</span><span class=p>(</span><span class=n>grid</span><span class=p>,</span> <span class=n>X</span><span class=p>,</span> <span class=n>y</span><span class=p>,</span> <span class=n>cv</span><span class=p>):</span>
+    <span class=n>nested_score</span> <span class=o>=</span> <span class=n>cross_val_score</span><span class=p>(</span><span class=n>grid</span><span class=p>,</span> <span class=n>X</span><span class=o>=</span><span class=n>X</span><span class=p>,</span> <span class=n>y</span><span class=o>=</span><span class=n>y</span><span class=p>,</span> <span class=n>cv</span><span class=o>=</span><span class=n>cv</span><span class=p>,</span> <span class=n>n_jobs</span><span class=o>=-</span><span class=mi>1</span><span class=p>)</span>
+    <span class=k>print</span> <span class=s>"Nested f1 score: {}"</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=n>nested_score</span><span class=o>.</span><span class=n>mean</span><span class=p>())</span>
 
-<p>They can indicate if the majority of an employee&rsquo;s emails were exchanged with POI&rsquo;s. In fact, POI&rsquo;s are grouped together in a scatter plot of the two new features.  </p>
-<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">df</span><span class="p">[</span><span class="s">'fraction_from_poi'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">'from_poi_to_this_person'</span><span class="p">]</span> <span class="o">/</span> <span class="n">df</span><span class="p">[</span><span class="s">'to_messages'</span><span class="p">]</span>
-<span class="n">df</span><span class="p">[</span><span class="s">'fraction_to_poi'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s">'from_this_person_to_poi'</span><span class="p">]</span> <span class="o">/</span> <span class="n">df</span><span class="p">[</span><span class="s">'from_messages'</span><span class="p">]</span>
+    <span class=n>grid</span><span class=o>.</span><span class=n>fit</span><span class=p>(</span><span class=n>X</span><span class=p>,</span> <span class=n>y</span><span class=p>)</span>    
+    <span class=k>print</span> <span class=s>"Best parameters: {}"</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=n>grid</span><span class=o>.</span><span class=n>best_params_</span><span class=p>)</span>
 
-<span class="n">ax</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s">'poi'</span><span class="p">]</span> <span class="o">==</span> <span class="bp">False</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s">'fraction_from_poi'</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s">'fraction_to_poi'</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">'blue'</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">'non-poi'</span><span class="p">)</span>
-<span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s">'poi'</span><span class="p">]</span> <span class="o">==</span> <span class="bp">True</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s">'fraction_from_poi'</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s">'fraction_to_poi'</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">'red'</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">'poi'</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
-</code></pre></div><div class="highlight"><pre><code class="language-" data-lang="">&lt;matplotlib.axes._subplots.AxesSubplot at 0xc9a8898&gt;
-</code></pre></div>
-<p><img src="/assets/images/enron/output_10_1.png" alt="png"></p>
+    <span class=n>cv_accuracy</span> <span class=o>=</span> <span class=p>[]</span>
+    <span class=n>cv_precision</span> <span class=o>=</span> <span class=p>[]</span>
+    <span class=n>cv_recall</span> <span class=o>=</span> <span class=p>[]</span>
+    <span class=n>cv_f1</span> <span class=o>=</span> <span class=p>[]</span>
+    <span class=k>for</span> <span class=n>train_index</span><span class=p>,</span> <span class=n>test_index</span> <span class=ow>in</span> <span class=n>cv</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=n>X</span><span class=p>,</span> <span class=n>y</span><span class=p>):</span>
+        <span class=n>X_train</span><span class=p>,</span> <span class=n>X_test</span> <span class=o>=</span> <span class=n>X</span><span class=p>[</span><span class=n>train_index</span><span class=p>],</span> <span class=n>X</span><span class=p>[</span><span class=n>test_index</span><span class=p>]</span>
+        <span class=n>y_train</span><span class=p>,</span> <span class=n>y_test</span> <span class=o>=</span> <span class=n>y</span><span class=p>[</span><span class=n>train_index</span><span class=p>],</span> <span class=n>y</span><span class=p>[</span><span class=n>test_index</span><span class=p>]</span>
 
-<p>Comparing the results for the final chosen model with and without our new engineered features, we get the following results:</p>
+        <span class=n>grid</span><span class=o>.</span><span class=n>best_estimator_</span><span class=o>.</span><span class=n>fit</span><span class=p>(</span><span class=n>X_train</span><span class=p>,</span> <span class=n>y_train</span><span class=p>)</span>
+        <span class=n>pred</span> <span class=o>=</span> <span class=n>grid</span><span class=o>.</span><span class=n>best_estimator_</span><span class=o>.</span><span class=n>predict</span><span class=p>(</span><span class=n>X_test</span><span class=p>)</span>
 
-<table><thead>
-<tr>
-<th>New Features</th>
-<th>Accuracy</th>
-<th>Precision</th>
-<th>Recall</th>
-<th>F1</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>yes</td>
-<td>0.879</td>
-<td>0.543</td>
-<td>0.325</td>
-<td>0.380</td>
-</tr>
-<tr>
-<td>no</td>
-<td>0.879</td>
-<td>0.543</td>
-<td>0.325</td>
-<td>0.380</td>
-</tr>
-</tbody></table>
+        <span class=n>cv_accuracy</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>accuracy_score</span><span class=p>(</span><span class=n>y_test</span><span class=p>,</span> <span class=n>pred</span><span class=p>))</span>
+        <span class=n>cv_precision</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>precision_score</span><span class=p>(</span><span class=n>y_test</span><span class=p>,</span> <span class=n>pred</span><span class=p>))</span>
+        <span class=n>cv_recall</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>recall_score</span><span class=p>(</span><span class=n>y_test</span><span class=p>,</span> <span class=n>pred</span><span class=p>))</span>
+        <span class=n>cv_f1</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>f1_score</span><span class=p>(</span><span class=n>y_test</span><span class=p>,</span> <span class=n>pred</span><span class=p>))</span>
 
-<p>Surprisingly the results were the same with and without the two engineered features.</p>
+    <span class=k>print</span> <span class=s>"Mean Accuracy: {}"</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=n>np</span><span class=o>.</span><span class=n>mean</span><span class=p>(</span><span class=n>cv_accuracy</span><span class=p>))</span>
+    <span class=k>print</span> <span class=s>"Mean Precision: {}"</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=n>np</span><span class=o>.</span><span class=n>mean</span><span class=p>(</span><span class=n>cv_precision</span><span class=p>))</span>
+    <span class=k>print</span> <span class=s>"Mean Recall: {}"</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=n>np</span><span class=o>.</span><span class=n>mean</span><span class=p>(</span><span class=n>cv_recall</span><span class=p>))</span>
+    <span class=k>print</span> <span class=s>"Mean f1: {}"</span><span class=o>.</span><span class=n>format</span><span class=p>(</span><span class=n>np</span><span class=o>.</span><span class=n>mean</span><span class=p>(</span><span class=n>cv_f1</span><span class=p>))</span>
+</code></pre></div><h3>Gaussian Naïve-Bayes</h3><div class=highlight><pre><code class=language-python data-lang=python><span class=c>### comment to perform a full hyperparameter search</span>
+<span class=c># SCALER = [None]</span>
+<span class=c># SELECTOR__K = [15]</span>
+<span class=c># REDUCER__N_COMPONENTS = [6]</span>
+<span class=c>###################################################</span>
 
-<h2>Properly Scale Features</h2>
+<span class=n>pipe</span> <span class=o>=</span> <span class=n>Pipeline</span><span class=p>([</span>
+        <span class=p>(</span><span class=s>'scaler'</span><span class=p>,</span> <span class=n>StandardScaler</span><span class=p>()),</span>
+        <span class=p>(</span><span class=s>'selector'</span><span class=p>,</span> <span class=n>SelectKBest</span><span class=p>()),</span>
+        <span class=p>(</span><span class=s>'reducer'</span><span class=p>,</span> <span class=n>PCA</span><span class=p>(</span><span class=n>random_state</span><span class=o>=</span><span class=mi>42</span><span class=p>)),</span>
+        <span class=p>(</span><span class=s>'classifier'</span><span class=p>,</span> <span class=n>GaussianNB</span><span class=p>())</span>
+    <span class=p>])</span>
 
-<p>Since we are going to perform a Principal Component Analysis (PCA) to reduce dimensionality later on, and many machine learning models ask for scaled features, a standardization of the features is going to be tested as the first step of our classification pipeline. If it improves the evaluation score of the model then the chosen final model will have this scaling step.</p>
+<span class=n>param_grid</span> <span class=o>=</span> <span class=p>{</span>
+    <span class=s>'scaler'</span><span class=p>:</span> <span class=n>SCALER</span><span class=p>,</span>
+    <span class=s>'selector__k'</span><span class=p>:</span> <span class=n>SELECTOR__K</span><span class=p>,</span>
+    <span class=s>'reducer__n_components'</span><span class=p>:</span> <span class=n>REDUCER__N_COMPONENTS</span>
+<span class=p>}</span>
 
-<p>To acomplish it I use the StandardScaler module from scikit learn, which standardizes features by removing the mean and scaling to unit variance.</p>
+<span class=n>gnb_grid</span> <span class=o>=</span> <span class=n>GridSearchCV</span><span class=p>(</span><span class=n>pipe</span><span class=p>,</span> <span class=n>param_grid</span><span class=p>,</span> <span class=n>scoring</span><span class=o>=</span><span class=s>'f1'</span><span class=p>,</span> <span class=n>cv</span><span class=o>=</span><span class=n>sss</span><span class=p>)</span>
 
-<h2>Intelligently Select Features</h2>
+<span class=n>evaluate_model</span><span class=p>(</span><span class=n>gnb_grid</span><span class=p>,</span> <span class=n>X</span><span class=p>,</span> <span class=n>y</span><span class=p>,</span> <span class=n>sss</span><span class=p>)</span>
 
-<p>The next step in the pipeline is selecting the features that convey the most information to our model.</p>
-
-<p>Leaving some features behind has some advantages, like reducing the noise in the classification, and saving processing time, since there are less features to compute.</p>
-
-<p>The chosen method was scikit learn&rsquo;s SelectKBest using f_classif as scoring function. The f_classif function computes the ANOVA F-value between labels and features for classification tasks.</p>
-
-<p>A few feature counts were tested with the aid of a grid search (it will be discussed in a later section), and finally, for the chosen model, 15 most important features were chosen:</p>
-
-<table><thead>
-<tr>
-<th>feature</th>
-<th>score</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>exercised_stock_options</td>
-<td>22.84690056</td>
-</tr>
-<tr>
-<td>total_stock_value</td>
-<td>22.33456614</td>
-</tr>
-<tr>
-<td>salary</td>
-<td>16.96091624</td>
-</tr>
-<tr>
-<td>bonus</td>
-<td>15.49141455</td>
-</tr>
-<tr>
-<td>fraction_to_poi</td>
-<td>13.80595013</td>
-</tr>
-<tr>
-<td>restricted_stock</td>
-<td>8.61001147</td>
-</tr>
-<tr>
-<td>total_payments</td>
-<td>8.50623857</td>
-</tr>
-<tr>
-<td>loan_advances</td>
-<td>7.3499902</td>
-</tr>
-<tr>
-<td>shared_receipt_with_poi</td>
-<td>7.06339857</td>
-</tr>
-<tr>
-<td>deferred_income</td>
-<td>6.19466529</td>
-</tr>
-<tr>
-<td>long_term_incentive</td>
-<td>5.66331492</td>
-</tr>
-<tr>
-<td>expenses</td>
-<td>5.28384553</td>
-</tr>
-<tr>
-<td>from_poi_to_this_person</td>
-<td>5.05036916</td>
-</tr>
-<tr>
-<td>other</td>
-<td>4.42180729</td>
-</tr>
-<tr>
-<td>fraction_from_poi</td>
-<td>3.57449894</td>
-</tr>
-</tbody></table>
-
-<p>The output of the feature selection was used as input to PCA. The features were projected to a lower dimensional space, reducing dimensionality from 15 features to 6 principal components in our final chosen model.</p>
-
-<h2>Pick an Algorithm</h2>
-
-<blockquote>
-<p>What algorithm did you end up using? What other one(s) did you try? How did model performance differ between algorithms? </p>
-</blockquote>
-
-<p>I ended up using a Gaussian Naïve-Bayes, which scored 0.366984126984 on the nested cross-validation f1. The algorithms tested were:
-- Gaussian Naïve-Bayes;
-- Support Vector Machines;
-- Decision Tree Classifier.</p>
-
-<p>The scores obtained for them are as follows:</p>
-
-<table><thead>
-<tr>
-<th>Algorithm</th>
-<th>Nested CV f1</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>Gaussian Naïve-Bayes</td>
-<td>0.366984126984</td>
-</tr>
-<tr>
-<td>Support Vector Machines</td>
-<td>0.287132034632</td>
-</tr>
-<tr>
-<td>Decision Tree Classifier</td>
-<td>0.228430049483</td>
-</tr>
-</tbody></table>
-
-<p>Although the other tested models scored better on other evaluation metrics, it is the nested cross-validation score that best depicts how the model generalizes on unseen data, therefore the Gaussian Naïve-Bayes was the chosen model.</p>
-
-<h2>Tune the Algorithm</h2>
-
-<blockquote>
-<p>What does it mean to tune the parameters of an algorithm, and what can happen if you don’t do this well?  How did you tune the parameters of your particular algorithm? (Some algorithms do not have parameters that you need to tune &ndash; if this is the case for the one you picked, identify and briefly explain how you would have done it for the model that was not your final choice or a different model that does utilize parameter tuning, e.g. a decision tree classifier).</p>
-</blockquote>
-
-<p>A crucial part of selecting a machine learning algorithm is to adjust it&rsquo;s parameters in order to maximize the evaluation metrics. If the parameters are not properly tuned, the algorithm can underfit or overfit the data, hence producing suboptimal results.</p>
-
-<p>To tune the algorithms, I used the GridSearchCV tool provided in scikit learn. It exhaustively searches for the best parameters between the ones specified in an array of possibilities. The parameters are chosen in order to optimize the chosen scoring function, in our case, f1 (the evaluation metrics will be better addressed on the &lsquo;Usage of Evaluation Metrics&rsquo; section).</p>
-
-<h2>Validation Strategy</h2>
-
-<blockquote>
-<p>What is validation, and what’s a classic mistake you can make if you do it wrong? How did you validate your analysis?</p>
-</blockquote>
-
-<p>Validation in machine learning consists of evaluating a model using data that was not touched during the training process. A classic mistake is to ignore this rule, hence obtaining overly optimistic results due to overfitting the training data, but very poor performance on unseen data.</p>
-
-<p>It is a good practice to separate data in three parts: training, cross-validation and test sets. The model is tuned to maximize the evaluation score on the cross-validation set, and then the final model efficiency is measured on the test set.</p>
-
-<p>Since there are too few observations for us to train and test the algorithms, in order to extract the most information from the data, the selected strategy to validate our model was a Nested Stratified Shuffle Split Cross-Validation.</p>
-
-<p>In this strategy effectively uses a series of train/validation/test set splits. In the inner loop, the score is approximately maximized by fitting a model to each training set, and then directly maximized in selecting (hyper)parameters over the validation set. In the outer loop, generalization error is estimated by averaging test set scores over several dataset splits. All sets are picked randomly, but keeping the same proportion of class labels.</p>
-
-<h2>Usage of Evaluation Metrics</h2>
-
-<blockquote>
-<p>Give at least 2 evaluation metrics and your average performance for each of them. Explain an interpretation of your metrics that says something human-understandable about your algorithm’s performance.</p>
-</blockquote>
-
-<p>For classification algorithms, some of the most common evaluation metrics are accuracy, precision, recall and the f1 score.</p>
-
-<ul>
-<li><p>Accuracy shows the ratio between right classifications and the total number of predicted labels. Since the POI/non-POI distribution is very uneven, accuracy does not mean much. A model that predicts always non-POI&rsquo;s would get an accuracy of 87.6%, which is an apparently good score for a terrible classifier.</p></li>
-<li><p>Precision is the ratio of right classifications over all observations with a given predicted label. For example, the ratio of true POI&rsquo;s over all predicted POI&rsquo;s.</p></li>
-<li><p>Recall is the ratio of right classifications over all observations that are truly of a given class. For example, the ratio of observations correctly labeled POI over all true POI&rsquo;s.</p></li>
-<li><p>F1 is a way of balance precision and recall, and is given by the following formula:</p></li>
-</ul>
-
-<p>$$F1 = 2 * (precision * recall) / (precision + recall)$$</p>
-
-<p>For the final selected model, the average scores were the following:</p>
-
-<table><thead>
-<tr>
-<th>Model</th>
-<th>Accuracy</th>
-<th>Precision</th>
-<th>Recall</th>
-<th>F1</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>GaussianNB</td>
-<td>0.879310344828</td>
-<td>0.543333333333</td>
-<td>0.325</td>
-<td>0.38</td>
-</tr>
-</tbody></table>
-
-<h2>Additional Code</h2>
-<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="c">### The first feature must be "poi".</span>
-<span class="n">features_list</span> <span class="o">=</span> <span class="p">[</span><span class="s">'poi'</span><span class="p">,</span> <span class="s">'salary'</span><span class="p">,</span> <span class="s">'bonus'</span><span class="p">,</span> <span class="s">'long_term_incentive'</span><span class="p">,</span> <span class="s">'deferred_income'</span><span class="p">,</span> <span class="s">'deferral_payments'</span><span class="p">,</span>
-                 <span class="s">'loan_advances'</span><span class="p">,</span> <span class="s">'other'</span><span class="p">,</span> <span class="s">'expenses'</span><span class="p">,</span> <span class="s">'director_fees'</span><span class="p">,</span> <span class="s">'total_payments'</span><span class="p">,</span> 
-                 <span class="s">'exercised_stock_options'</span><span class="p">,</span> <span class="s">'restricted_stock'</span><span class="p">,</span> <span class="s">'restricted_stock_deferred'</span><span class="p">,</span> 
-                 <span class="s">'total_stock_value'</span><span class="p">,</span> <span class="s">'to_messages'</span><span class="p">,</span> <span class="s">'from_messages'</span><span class="p">,</span> <span class="s">'from_this_person_to_poi'</span><span class="p">,</span> 
-                 <span class="s">'from_poi_to_this_person'</span><span class="p">,</span> <span class="s">'shared_receipt_with_poi'</span><span class="p">,</span> <span class="s">'fraction_from_poi'</span><span class="p">,</span> <span class="s">'fraction_to_poi'</span><span class="p">]</span>
-
-<span class="c">### Load the dictionary containing the dataset</span>
-<span class="n">filled_df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s">'NaN'</span><span class="p">)</span> <span class="c"># featureFormat expects 'NaN' strings</span>
-<span class="n">data_dict</span> <span class="o">=</span> <span class="n">filled_df</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s">'index'</span><span class="p">)</span>
-
-<span class="c">### Store to my_dataset for easy export below.</span>
-<span class="n">my_dataset</span> <span class="o">=</span> <span class="n">data_dict</span>
-
-<span class="c">### Extract features and labels from dataset for local testing</span>
-<span class="n">data</span> <span class="o">=</span> <span class="n">featureFormat</span><span class="p">(</span><span class="n">my_dataset</span><span class="p">,</span> <span class="n">features_list</span><span class="p">,</span> <span class="n">sort_keys</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
-<span class="n">y</span><span class="p">,</span> <span class="n">X</span> <span class="o">=</span> <span class="n">targetFeatureSplit</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-
-<span class="c">### Cross-validation</span>
-<span class="n">sss</span> <span class="o">=</span> <span class="n">StratifiedShuffleSplit</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
-
-<span class="n">SCALER</span> <span class="o">=</span> <span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="n">StandardScaler</span><span class="p">()]</span>
-<span class="n">SELECTOR__K</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="s">'all'</span><span class="p">]</span>
-<span class="n">REDUCER__N_COMPONENTS</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
-</code></pre></div><div class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">evaluate_model</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">cv</span><span class="p">):</span>
-    <span class="n">nested_score</span> <span class="o">=</span> <span class="n">cross_val_score</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">cv</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
-    <span class="k">print</span> <span class="s">"Nested f1 score: {}"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nested_score</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
-
-    <span class="n">grid</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>    
-    <span class="k">print</span> <span class="s">"Best parameters: {}"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">best_params_</span><span class="p">)</span>
-
-    <span class="n">cv_accuracy</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">cv_precision</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">cv_recall</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">cv_f1</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">train_index</span><span class="p">,</span> <span class="n">test_index</span> <span class="ow">in</span> <span class="n">cv</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-        <span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">train_index</span><span class="p">],</span> <span class="n">X</span><span class="p">[</span><span class="n">test_index</span><span class="p">]</span>
-        <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">train_index</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">test_index</span><span class="p">]</span>
-
-        <span class="n">grid</span><span class="o">.</span><span class="n">best_estimator_</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
-        <span class="n">pred</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">best_estimator_</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
-
-        <span class="n">cv_accuracy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">pred</span><span class="p">))</span>
-        <span class="n">cv_precision</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">precision_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">pred</span><span class="p">))</span>
-        <span class="n">cv_recall</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">recall_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">pred</span><span class="p">))</span>
-        <span class="n">cv_f1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f1_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">pred</span><span class="p">))</span>
-
-    <span class="k">print</span> <span class="s">"Mean Accuracy: {}"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">cv_accuracy</span><span class="p">))</span>
-    <span class="k">print</span> <span class="s">"Mean Precision: {}"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">cv_precision</span><span class="p">))</span>
-    <span class="k">print</span> <span class="s">"Mean Recall: {}"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">cv_recall</span><span class="p">))</span>
-    <span class="k">print</span> <span class="s">"Mean f1: {}"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">cv_f1</span><span class="p">))</span>
-</code></pre></div>
-<h3>Gaussian Naïve-Bayes</h3>
-<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="c">### comment to perform a full hyperparameter search</span>
-<span class="c"># SCALER = [None]</span>
-<span class="c"># SELECTOR__K = [15]</span>
-<span class="c"># REDUCER__N_COMPONENTS = [6]</span>
-<span class="c">###################################################</span>
-
-<span class="n">pipe</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">([</span>
-        <span class="p">(</span><span class="s">'scaler'</span><span class="p">,</span> <span class="n">StandardScaler</span><span class="p">()),</span>
-        <span class="p">(</span><span class="s">'selector'</span><span class="p">,</span> <span class="n">SelectKBest</span><span class="p">()),</span>
-        <span class="p">(</span><span class="s">'reducer'</span><span class="p">,</span> <span class="n">PCA</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)),</span>
-        <span class="p">(</span><span class="s">'classifier'</span><span class="p">,</span> <span class="n">GaussianNB</span><span class="p">())</span>
-    <span class="p">])</span>
-
-<span class="n">param_grid</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s">'scaler'</span><span class="p">:</span> <span class="n">SCALER</span><span class="p">,</span>
-    <span class="s">'selector__k'</span><span class="p">:</span> <span class="n">SELECTOR__K</span><span class="p">,</span>
-    <span class="s">'reducer__n_components'</span><span class="p">:</span> <span class="n">REDUCER__N_COMPONENTS</span>
-<span class="p">}</span>
-
-<span class="n">gnb_grid</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span><span class="n">pipe</span><span class="p">,</span> <span class="n">param_grid</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="s">'f1'</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">sss</span><span class="p">)</span>
-
-<span class="n">evaluate_model</span><span class="p">(</span><span class="n">gnb_grid</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sss</span><span class="p">)</span>
-
-<span class="n">test_classifier</span><span class="p">(</span><span class="n">gnb_grid</span><span class="o">.</span><span class="n">best_estimator_</span><span class="p">,</span> <span class="n">my_dataset</span><span class="p">,</span> <span class="n">features_list</span><span class="p">)</span>
-</code></pre></div><div class="highlight"><pre><code class="language-" data-lang="">Nested f1 score: 0.366984126984
+<span class=n>test_classifier</span><span class=p>(</span><span class=n>gnb_grid</span><span class=o>.</span><span class=n>best_estimator_</span><span class=p>,</span> <span class=n>my_dataset</span><span class=p>,</span> <span class=n>features_list</span><span class=p>)</span>
+</code></pre></div><div class=highlight><pre><code class=language- data-lang="">Nested f1 score: 0.366984126984
 
 
 C:\Users\schil\Anaconda2\lib\site-packages\sklearn\metrics\classification.py:1113: UndefinedMetricWarning: F-score is ill-defined and being set to 0.0 due to no predicted samples.
@@ -541,78 +184,74 @@ Pipeline(steps=[('scaler', None), ('selector', SelectKBest(k=15, score_func=&lt;
   svd_solver='auto', tol=0.0, whiten=False)), ('classifier', GaussianNB(priors=None))])
     Accuracy: 0.85733   Precision: 0.44868  Recall: 0.30600 F1: 0.36385 F2: 0.32678
     Total predictions: 15000    True positives:  612    False positives:  752   False negatives: 1388   True negatives: 12248
-</code></pre></div><div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">kbest</span> <span class="o">=</span> <span class="n">gnb_grid</span><span class="o">.</span><span class="n">best_estimator_</span><span class="o">.</span><span class="n">named_steps</span><span class="p">[</span><span class="s">'selector'</span><span class="p">]</span>
+</code></pre></div><div class=highlight><pre><code class=language-python data-lang=python><span class=n>kbest</span> <span class=o>=</span> <span class=n>gnb_grid</span><span class=o>.</span><span class=n>best_estimator_</span><span class=o>.</span><span class=n>named_steps</span><span class=p>[</span><span class=s>'selector'</span><span class=p>]</span>
 
-<span class="n">features_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">features_list</span><span class="p">)</span>
-<span class="n">features_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">features_array</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-<span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">kbest</span><span class="o">.</span><span class="n">scores_</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-<span class="n">k_features</span> <span class="o">=</span> <span class="n">kbest</span><span class="o">.</span><span class="n">get_support</span><span class="p">()</span><span class="o">.</span><span class="nb">sum</span><span class="p">()</span>
+<span class=n>features_array</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>array</span><span class=p>(</span><span class=n>features_list</span><span class=p>)</span>
+<span class=n>features_array</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>delete</span><span class=p>(</span><span class=n>features_array</span><span class=p>,</span> <span class=mi>0</span><span class=p>)</span>
+<span class=n>indices</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>argsort</span><span class=p>(</span><span class=n>kbest</span><span class=o>.</span><span class=n>scores_</span><span class=p>)[::</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span>
+<span class=n>k_features</span> <span class=o>=</span> <span class=n>kbest</span><span class=o>.</span><span class=n>get_support</span><span class=p>()</span><span class=o>.</span><span class=nb>sum</span><span class=p>()</span>
 
-<span class="n">features</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k_features</span><span class="p">):</span>
-    <span class="n">features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">features_array</span><span class="p">[</span><span class="n">indices</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+<span class=n>features</span> <span class=o>=</span> <span class=p>[]</span>
+<span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=n>k_features</span><span class=p>):</span>
+    <span class=n>features</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>features_array</span><span class=p>[</span><span class=n>indices</span><span class=p>[</span><span class=n>i</span><span class=p>]])</span>
 
-<span class="n">features</span> <span class="o">=</span> <span class="n">features</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-<span class="n">scores</span> <span class="o">=</span> <span class="n">kbest</span><span class="o">.</span><span class="n">scores_</span><span class="p">[</span><span class="n">indices</span><span class="p">[</span><span class="nb">range</span><span class="p">(</span><span class="n">k_features</span><span class="p">)]][::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class=n>features</span> <span class=o>=</span> <span class=n>features</span><span class=p>[::</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span>
+<span class=n>scores</span> <span class=o>=</span> <span class=n>kbest</span><span class=o>.</span><span class=n>scores_</span><span class=p>[</span><span class=n>indices</span><span class=p>[</span><span class=nb>range</span><span class=p>(</span><span class=n>k_features</span><span class=p>)]][::</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">k_features</span><span class="p">),</span> <span class="n">scores</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">k_features</span><span class="p">),</span> <span class="n">features</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">'SelectKBest Feature Importances'</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</code></pre></div>
-<p><img src="/assets/images/enron/output_16_0.png" alt="png"></p>
-<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="c"># Without the engineered features</span>
-<span class="c"># removing the 2 last columns</span>
-<span class="n">X_2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">X_2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">X_2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class=n>plt</span><span class=o>.</span><span class=n>barh</span><span class=p>(</span><span class=nb>range</span><span class=p>(</span><span class=n>k_features</span><span class=p>),</span> <span class=n>scores</span><span class=p>)</span>
+<span class=n>plt</span><span class=o>.</span><span class=n>yticks</span><span class=p>(</span><span class=n>np</span><span class=o>.</span><span class=n>arange</span><span class=p>(</span><span class=mf>0.4</span><span class=p>,</span> <span class=n>k_features</span><span class=p>),</span> <span class=n>features</span><span class=p>)</span>
+<span class=n>plt</span><span class=o>.</span><span class=n>title</span><span class=p>(</span><span class=s>'SelectKBest Feature Importances'</span><span class=p>)</span>
+<span class=n>plt</span><span class=o>.</span><span class=n>show</span><span class=p>()</span>
+</code></pre></div><p><img src=/assets/images/enron/output_16_0.png alt=png></p><div class=highlight><pre><code class=language-python data-lang=python><span class=c># Without the engineered features</span>
+<span class=c># removing the 2 last columns</span>
+<span class=n>X_2</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>delete</span><span class=p>(</span><span class=n>X</span><span class=p>,</span> <span class=o>-</span><span class=mi>1</span><span class=p>,</span> <span class=mi>1</span><span class=p>)</span>
+<span class=n>X_2</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>delete</span><span class=p>(</span><span class=n>X_2</span><span class=p>,</span> <span class=o>-</span><span class=mi>1</span><span class=p>,</span> <span class=mi>1</span><span class=p>)</span>
 
-<span class="n">evaluate_model</span><span class="p">(</span><span class="n">gnb_grid</span><span class="p">,</span> <span class="n">X_2</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sss</span><span class="p">)</span>
-</code></pre></div><div class="highlight"><pre><code class="language-" data-lang="">Nested f1 score: 0.345079365079
+<span class=n>evaluate_model</span><span class=p>(</span><span class=n>gnb_grid</span><span class=p>,</span> <span class=n>X_2</span><span class=p>,</span> <span class=n>y</span><span class=p>,</span> <span class=n>sss</span><span class=p>)</span>
+</code></pre></div><div class=highlight><pre><code class=language- data-lang="">Nested f1 score: 0.345079365079
 Best parameters: {'reducer__n_components': 6, 'selector__k': 13, 'scaler': None}
 Mean Accuracy: 0.879310344828
 Mean Precision: 0.543333333333
 Mean Recall: 0.325
 Mean f1: 0.38
-</code></pre></div>
-<h3>Support Vector Machine Classifier</h3>
-<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">C_PARAM</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
-<span class="n">GAMMA_PARAM</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
-<span class="n">CLASS_WEIGHT</span> <span class="o">=</span> <span class="p">[</span><span class="s">'balanced'</span><span class="p">,</span> <span class="bp">None</span><span class="p">]</span>
-<span class="n">KERNEL</span> <span class="o">=</span> <span class="p">[</span><span class="s">'rbf'</span><span class="p">,</span> <span class="s">'sigmoid'</span><span class="p">]</span>
+</code></pre></div><h3>Support Vector Machine Classifier</h3><div class=highlight><pre><code class=language-python data-lang=python><span class=n>C_PARAM</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>logspace</span><span class=p>(</span><span class=o>-</span><span class=mi>2</span><span class=p>,</span> <span class=mi>3</span><span class=p>,</span> <span class=mi>6</span><span class=p>)</span>
+<span class=n>GAMMA_PARAM</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>logspace</span><span class=p>(</span><span class=o>-</span><span class=mi>4</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>6</span><span class=p>)</span>
+<span class=n>CLASS_WEIGHT</span> <span class=o>=</span> <span class=p>[</span><span class=s>'balanced'</span><span class=p>,</span> <span class=bp>None</span><span class=p>]</span>
+<span class=n>KERNEL</span> <span class=o>=</span> <span class=p>[</span><span class=s>'rbf'</span><span class=p>,</span> <span class=s>'sigmoid'</span><span class=p>]</span>
 
-<span class="c">### comment to perform a full hyperparameter search</span>
-<span class="c"># SCALER = [StandardScaler()]</span>
-<span class="c"># SELECTOR__K = [18]</span>
-<span class="c"># REDUCER__N_COMPONENTS = [10]</span>
-<span class="c"># C_PARAM = [100]</span>
-<span class="c"># GAMMA_PARAM = [.01]</span>
-<span class="c"># CLASS_WEIGHT = ['balanced']</span>
-<span class="c"># KERNEL = ['sigmoid']</span>
-<span class="c">###################################################</span>
+<span class=c>### comment to perform a full hyperparameter search</span>
+<span class=c># SCALER = [StandardScaler()]</span>
+<span class=c># SELECTOR__K = [18]</span>
+<span class=c># REDUCER__N_COMPONENTS = [10]</span>
+<span class=c># C_PARAM = [100]</span>
+<span class=c># GAMMA_PARAM = [.01]</span>
+<span class=c># CLASS_WEIGHT = ['balanced']</span>
+<span class=c># KERNEL = ['sigmoid']</span>
+<span class=c>###################################################</span>
 
-<span class="n">pipe</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">([</span>
-        <span class="p">(</span><span class="s">'scaler'</span><span class="p">,</span> <span class="n">StandardScaler</span><span class="p">()),</span>
-        <span class="p">(</span><span class="s">'selector'</span><span class="p">,</span> <span class="n">SelectKBest</span><span class="p">()),</span>
-        <span class="p">(</span><span class="s">'reducer'</span><span class="p">,</span> <span class="n">PCA</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)),</span>
-        <span class="p">(</span><span class="s">'classifier'</span><span class="p">,</span> <span class="n">SVC</span><span class="p">())</span>
-    <span class="p">])</span>
+<span class=n>pipe</span> <span class=o>=</span> <span class=n>Pipeline</span><span class=p>([</span>
+        <span class=p>(</span><span class=s>'scaler'</span><span class=p>,</span> <span class=n>StandardScaler</span><span class=p>()),</span>
+        <span class=p>(</span><span class=s>'selector'</span><span class=p>,</span> <span class=n>SelectKBest</span><span class=p>()),</span>
+        <span class=p>(</span><span class=s>'reducer'</span><span class=p>,</span> <span class=n>PCA</span><span class=p>(</span><span class=n>random_state</span><span class=o>=</span><span class=mi>42</span><span class=p>)),</span>
+        <span class=p>(</span><span class=s>'classifier'</span><span class=p>,</span> <span class=n>SVC</span><span class=p>())</span>
+    <span class=p>])</span>
 
-<span class="n">param_grid</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s">'scaler'</span><span class="p">:</span> <span class="n">SCALER</span><span class="p">,</span>
-    <span class="s">'selector__k'</span><span class="p">:</span> <span class="n">SELECTOR__K</span><span class="p">,</span>
-    <span class="s">'reducer__n_components'</span><span class="p">:</span> <span class="n">REDUCER__N_COMPONENTS</span><span class="p">,</span>
-    <span class="s">'classifier__C'</span><span class="p">:</span> <span class="n">C_PARAM</span><span class="p">,</span>
-    <span class="s">'classifier__gamma'</span><span class="p">:</span> <span class="n">GAMMA_PARAM</span><span class="p">,</span>
-    <span class="s">'classifier__class_weight'</span><span class="p">:</span> <span class="n">CLASS_WEIGHT</span><span class="p">,</span>
-    <span class="s">'classifier__kernel'</span><span class="p">:</span> <span class="n">KERNEL</span>
-<span class="p">}</span>
+<span class=n>param_grid</span> <span class=o>=</span> <span class=p>{</span>
+    <span class=s>'scaler'</span><span class=p>:</span> <span class=n>SCALER</span><span class=p>,</span>
+    <span class=s>'selector__k'</span><span class=p>:</span> <span class=n>SELECTOR__K</span><span class=p>,</span>
+    <span class=s>'reducer__n_components'</span><span class=p>:</span> <span class=n>REDUCER__N_COMPONENTS</span><span class=p>,</span>
+    <span class=s>'classifier__C'</span><span class=p>:</span> <span class=n>C_PARAM</span><span class=p>,</span>
+    <span class=s>'classifier__gamma'</span><span class=p>:</span> <span class=n>GAMMA_PARAM</span><span class=p>,</span>
+    <span class=s>'classifier__class_weight'</span><span class=p>:</span> <span class=n>CLASS_WEIGHT</span><span class=p>,</span>
+    <span class=s>'classifier__kernel'</span><span class=p>:</span> <span class=n>KERNEL</span>
+<span class=p>}</span>
 
-<span class="n">svc_grid</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span><span class="n">pipe</span><span class="p">,</span> <span class="n">param_grid</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="s">'f1'</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">sss</span><span class="p">)</span>
+<span class=n>svc_grid</span> <span class=o>=</span> <span class=n>GridSearchCV</span><span class=p>(</span><span class=n>pipe</span><span class=p>,</span> <span class=n>param_grid</span><span class=p>,</span> <span class=n>scoring</span><span class=o>=</span><span class=s>'f1'</span><span class=p>,</span> <span class=n>cv</span><span class=o>=</span><span class=n>sss</span><span class=p>)</span>
 
-<span class="n">evaluate_model</span><span class="p">(</span><span class="n">svc_grid</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sss</span><span class="p">)</span>
+<span class=n>evaluate_model</span><span class=p>(</span><span class=n>svc_grid</span><span class=p>,</span> <span class=n>X</span><span class=p>,</span> <span class=n>y</span><span class=p>,</span> <span class=n>sss</span><span class=p>)</span>
 
-<span class="n">test_classifier</span><span class="p">(</span><span class="n">svc_grid</span><span class="o">.</span><span class="n">best_estimator_</span><span class="p">,</span> <span class="n">my_dataset</span><span class="p">,</span> <span class="n">features_list</span><span class="p">)</span>
-</code></pre></div><div class="highlight"><pre><code class="language-" data-lang="">Nested f1 score: 0.287132034632
+<span class=n>test_classifier</span><span class=p>(</span><span class=n>svc_grid</span><span class=o>.</span><span class=n>best_estimator_</span><span class=p>,</span> <span class=n>my_dataset</span><span class=p>,</span> <span class=n>features_list</span><span class=p>)</span>
+</code></pre></div><div class=highlight><pre><code class=language- data-lang="">Nested f1 score: 0.287132034632
 Best parameters: {'reducer__n_components': 10, 'selector__k': 18, 'scaler': StandardScaler(copy=True, with_mean=True, with_std=True), 'classifier__class_weight': 'balanced', 'classifier__gamma': 0.01, 'classifier__kernel': 'sigmoid', 'classifier__C': 100.0}
 Mean Accuracy: 0.827586206897
 Mean Precision: 0.460887445887
@@ -624,46 +263,44 @@ Pipeline(steps=[('scaler', StandardScaler(copy=True, with_mean=True, with_std=Tr
   tol=0.001, verbose=False))])
     Accuracy: 0.76920   Precision: 0.33595  Recall: 0.74850 F1: 0.46375 F2: 0.60092
     Total predictions: 15000    True positives: 1497    False positives: 2959   False negatives:  503   True negatives: 10041
-</code></pre></div>
-<h3>Decision Tree Classifier</h3>
-<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">CRITERION</span> <span class="o">=</span> <span class="p">[</span><span class="s">'gini'</span><span class="p">,</span> <span class="s">'entropy'</span><span class="p">]</span>
-<span class="n">SPLITTER</span> <span class="o">=</span> <span class="p">[</span><span class="s">'best'</span><span class="p">,</span> <span class="s">'random'</span><span class="p">]</span>
-<span class="n">MIN_SAMPLES_SPLIT</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
-<span class="n">CLASS_WEIGHT</span> <span class="o">=</span> <span class="p">[</span><span class="s">'balanced'</span><span class="p">,</span> <span class="bp">None</span><span class="p">]</span>
+</code></pre></div><h3>Decision Tree Classifier</h3><div class=highlight><pre><code class=language-python data-lang=python><span class=n>CRITERION</span> <span class=o>=</span> <span class=p>[</span><span class=s>'gini'</span><span class=p>,</span> <span class=s>'entropy'</span><span class=p>]</span>
+<span class=n>SPLITTER</span> <span class=o>=</span> <span class=p>[</span><span class=s>'best'</span><span class=p>,</span> <span class=s>'random'</span><span class=p>]</span>
+<span class=n>MIN_SAMPLES_SPLIT</span> <span class=o>=</span> <span class=p>[</span><span class=mi>2</span><span class=p>,</span> <span class=mi>4</span><span class=p>,</span> <span class=mi>6</span><span class=p>,</span> <span class=mi>8</span><span class=p>]</span>
+<span class=n>CLASS_WEIGHT</span> <span class=o>=</span> <span class=p>[</span><span class=s>'balanced'</span><span class=p>,</span> <span class=bp>None</span><span class=p>]</span>
 
-<span class="c">### comment to perform a full hyperparameter search</span>
-<span class="c"># SCALER = [StandardScaler()]</span>
-<span class="c"># SELECTOR__K = [18]</span>
-<span class="c"># REDUCER__N_COMPONENTS = [2]</span>
-<span class="c"># CRITERION = ['gini']</span>
-<span class="c"># SPLITTER = ['random']</span>
-<span class="c"># MIN_SAMPLES_SPLIT = [8]</span>
-<span class="c"># CLASS_WEIGHT = ['balanced']</span>
-<span class="c">###################################################</span>
+<span class=c>### comment to perform a full hyperparameter search</span>
+<span class=c># SCALER = [StandardScaler()]</span>
+<span class=c># SELECTOR__K = [18]</span>
+<span class=c># REDUCER__N_COMPONENTS = [2]</span>
+<span class=c># CRITERION = ['gini']</span>
+<span class=c># SPLITTER = ['random']</span>
+<span class=c># MIN_SAMPLES_SPLIT = [8]</span>
+<span class=c># CLASS_WEIGHT = ['balanced']</span>
+<span class=c>###################################################</span>
 
-<span class="n">pipe</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">([</span>
-        <span class="p">(</span><span class="s">'scaler'</span><span class="p">,</span> <span class="n">StandardScaler</span><span class="p">()),</span>
-        <span class="p">(</span><span class="s">'selector'</span><span class="p">,</span> <span class="n">SelectKBest</span><span class="p">()),</span>
-        <span class="p">(</span><span class="s">'reducer'</span><span class="p">,</span> <span class="n">PCA</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)),</span>
-        <span class="p">(</span><span class="s">'classifier'</span><span class="p">,</span> <span class="n">DecisionTreeClassifier</span><span class="p">())</span>
-    <span class="p">])</span>
+<span class=n>pipe</span> <span class=o>=</span> <span class=n>Pipeline</span><span class=p>([</span>
+        <span class=p>(</span><span class=s>'scaler'</span><span class=p>,</span> <span class=n>StandardScaler</span><span class=p>()),</span>
+        <span class=p>(</span><span class=s>'selector'</span><span class=p>,</span> <span class=n>SelectKBest</span><span class=p>()),</span>
+        <span class=p>(</span><span class=s>'reducer'</span><span class=p>,</span> <span class=n>PCA</span><span class=p>(</span><span class=n>random_state</span><span class=o>=</span><span class=mi>42</span><span class=p>)),</span>
+        <span class=p>(</span><span class=s>'classifier'</span><span class=p>,</span> <span class=n>DecisionTreeClassifier</span><span class=p>())</span>
+    <span class=p>])</span>
 
-<span class="n">param_grid</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s">'scaler'</span><span class="p">:</span> <span class="n">SCALER</span><span class="p">,</span>
-    <span class="s">'selector__k'</span><span class="p">:</span> <span class="n">SELECTOR__K</span><span class="p">,</span>
-    <span class="s">'reducer__n_components'</span><span class="p">:</span> <span class="n">REDUCER__N_COMPONENTS</span><span class="p">,</span>
-    <span class="s">'classifier__criterion'</span><span class="p">:</span> <span class="n">CRITERION</span><span class="p">,</span>
-    <span class="s">'classifier__splitter'</span><span class="p">:</span> <span class="n">SPLITTER</span><span class="p">,</span>
-    <span class="s">'classifier__min_samples_split'</span><span class="p">:</span> <span class="n">MIN_SAMPLES_SPLIT</span><span class="p">,</span>
-    <span class="s">'classifier__class_weight'</span><span class="p">:</span> <span class="n">CLASS_WEIGHT</span><span class="p">,</span>
-<span class="p">}</span>
+<span class=n>param_grid</span> <span class=o>=</span> <span class=p>{</span>
+    <span class=s>'scaler'</span><span class=p>:</span> <span class=n>SCALER</span><span class=p>,</span>
+    <span class=s>'selector__k'</span><span class=p>:</span> <span class=n>SELECTOR__K</span><span class=p>,</span>
+    <span class=s>'reducer__n_components'</span><span class=p>:</span> <span class=n>REDUCER__N_COMPONENTS</span><span class=p>,</span>
+    <span class=s>'classifier__criterion'</span><span class=p>:</span> <span class=n>CRITERION</span><span class=p>,</span>
+    <span class=s>'classifier__splitter'</span><span class=p>:</span> <span class=n>SPLITTER</span><span class=p>,</span>
+    <span class=s>'classifier__min_samples_split'</span><span class=p>:</span> <span class=n>MIN_SAMPLES_SPLIT</span><span class=p>,</span>
+    <span class=s>'classifier__class_weight'</span><span class=p>:</span> <span class=n>CLASS_WEIGHT</span><span class=p>,</span>
+<span class=p>}</span>
 
-<span class="n">tree_grid</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span><span class="n">pipe</span><span class="p">,</span> <span class="n">param_grid</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="s">'f1'</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">sss</span><span class="p">)</span>
+<span class=n>tree_grid</span> <span class=o>=</span> <span class=n>GridSearchCV</span><span class=p>(</span><span class=n>pipe</span><span class=p>,</span> <span class=n>param_grid</span><span class=p>,</span> <span class=n>scoring</span><span class=o>=</span><span class=s>'f1'</span><span class=p>,</span> <span class=n>cv</span><span class=o>=</span><span class=n>sss</span><span class=p>)</span>
 
-<span class="n">evaluate_model</span><span class="p">(</span><span class="n">tree_grid</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sss</span><span class="p">)</span>
+<span class=n>evaluate_model</span><span class=p>(</span><span class=n>tree_grid</span><span class=p>,</span> <span class=n>X</span><span class=p>,</span> <span class=n>y</span><span class=p>,</span> <span class=n>sss</span><span class=p>)</span>
 
-<span class="n">test_classifier</span><span class="p">(</span><span class="n">tree_grid</span><span class="o">.</span><span class="n">best_estimator_</span><span class="p">,</span> <span class="n">my_dataset</span><span class="p">,</span> <span class="n">features_list</span><span class="p">)</span>
-</code></pre></div><div class="highlight"><pre><code class="language-" data-lang="">Nested f1 score: 0.228430049483
+<span class=n>test_classifier</span><span class=p>(</span><span class=n>tree_grid</span><span class=o>.</span><span class=n>best_estimator_</span><span class=p>,</span> <span class=n>my_dataset</span><span class=p>,</span> <span class=n>features_list</span><span class=p>)</span>
+</code></pre></div><div class=highlight><pre><code class=language- data-lang="">Nested f1 score: 0.228430049483
 Best parameters: {'reducer__n_components': 4, 'selector__k': 15, 'scaler': StandardScaler(copy=True, with_mean=True, with_std=True), 'classifier__min_samples_split': 8, 'classifier__class_weight': 'balanced', 'classifier__splitter': 'random', 'classifier__criterion': 'gini'}
 Mean Accuracy: 0.758620689655
 Mean Precision: 0.325331890332
@@ -674,58 +311,4 @@ Pipeline(steps=[('scaler', StandardScaler(copy=True, with_mean=True, with_std=Tr
             presort=False, random_state=None, splitter='random'))])
     Accuracy: 0.73587   Precision: 0.24677  Recall: 0.47800 F1: 0.32550 F2: 0.40256
     Total predictions: 15000    True positives:  956    False positives: 2918   False negatives: 1044   True negatives: 10082
-</code></pre></div>
-<h2>References</h2>
-
-<ul>
-<li><a href="http://scikit-learn.org/">http://scikit-learn.org/</a></li>
-<li><a href="http://sebastianraschka.com/Articles/2014_about_feature_scaling.html">http://sebastianraschka.com/Articles/2014_about_feature_scaling.html</a></li>
-</ul>
-
-  </div>
-
-</article>
-
-      </div>
-    </div>
-
-    <footer class="site-footer">
-
-  <div class="wrapper">
-
-    <h2 class="footer-heading">Luiz Schiller</h2>
-
-    <div class="footer-col-wrapper">
-      <div class="footer-col footer-col-1">
-        <ul class="contact-list">
-          <li>Luiz Schiller</li>
-          <li><a href="mailto:schillerbr@gmail.com">schillerbr@gmail.com</a></li>
-        </ul>
-      </div>
-
-      <div class="footer-col footer-col-2">
-        <ul class="social-media-list">
-          
-
-          
-        </ul>
-      </div>
-
-      <div class="footer-col footer-col-3">
-        <p>Data Science by Luiz Schiller</p>
-      </div>
-    </div>
-
-  </div>
-
-</footer>
-
-
-  <!-- JS -->
-  <!-- inject:js -->
-  <script src="/assets/javascript/index.js"></script>
-  <!-- endinject -->
-
-  </body>
-
-</html>
+</code></pre></div><h2>References</h2><ul><li><a href=http://scikit-learn.org/ >http://scikit-learn.org/</a></li><li><a href=http://sebastianraschka.com/Articles/2014_about_feature_scaling.html>http://sebastianraschka.com/Articles/2014_about_feature_scaling.html</a></li></ul></div></article></div></div><footer class=site-footer><div class=wrapper><h2 class=footer-heading>Luiz Schiller</h2><div class=footer-col-wrapper><div class="footer-col footer-col-1"><ul class=contact-list><li>Luiz Schiller</li><li><a href=mailto:schillerbr@gmail.com>schillerbr@gmail.com</a></li></ul></div><div class="footer-col footer-col-2"><ul class=social-media-list></ul></div><div class="footer-col footer-col-3"><p>Data Science by Luiz Schiller</p></div></div></div></footer><script src=/assets/javascript/index-f8fab38504.min.js></script></body></html>
