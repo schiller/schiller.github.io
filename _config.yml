@@ -17,8 +17,8 @@ author:
   email: schillerbr@gmail.com
   uri: http://luizschiller.com
   bio: Data Science enthusiast
-  twitter:
-  github:
+  twitter: luizschiller
+  github: schiller
 
 # _config.build.yml overwrites these options when you run `gulp build`
 # Enables future posts (posts with dates in the future) and drafts
