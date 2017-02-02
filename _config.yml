@@ -1,8 +1,8 @@
 # Title, decription, tagline and URL for your site
 # Can be used in your theme by calling 'site.title' and so on
 title: Luiz Schiller
-description: Data Science by Luiz Schiller
-url: http://luizschiller.com
+description: Thoughts and projects regarding Data Science
+url: http://www.luizschiller.com
 
 # Used so Jekyll outputs the site correctly so Gulp can do what it wants
 source: .tmp/src
@@ -15,7 +15,7 @@ exclude: ['assets']
 author:
   name: Luiz Gustavo Schiller
   email: schillerbr@gmail.com
-  uri: http://luizschiller.com
+  uri: http://www.luizschiller.com
   bio: Data Science enthusiast
   twitter: luizschiller
   github: schiller
