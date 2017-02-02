@@ -2,7 +2,7 @@
 # Can be used in your theme by calling 'site.title' and so on
 title: Luiz Schiller
 description: Data Science by Luiz Schiller
-url: https://schiller.github.io
+url: http://luizschiller.com
 
 # Used so Jekyll outputs the site correctly so Gulp can do what it wants
 source: .tmp/src
@@ -15,7 +15,7 @@ exclude: ['assets']
 author:
   name: Luiz Gustavo Schiller
   email: schillerbr@gmail.com
-  uri: https://schiller.github.io
+  uri: http://luizschiller.com
   bio: Data Science enthusiast
   twitter:
   github:
@@ -30,7 +30,7 @@ lsi: false
 limit_posts: 10
 
 # Permalink structure and pagination options
-permalink: none
+permalink: /:title/
 paginate: 10
 paginate_path: 'page:num'
 excerpt_separator: ''
