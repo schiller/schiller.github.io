@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- SEO -->
+  <!-- Begin Jekyll SEO tag v2.1.0 -->
+<title>Investigating the Titanic Dataset with Python - Luiz Schiller</title>
+<meta property="og:title" content="Investigating the Titanic Dataset with Python" />
+<meta name="description" content="A series of exploratory analyses on Kaggle&rsquo;s Titanic dataset." />
+<meta property="og:description" content="A series of exploratory analyses on Kaggle&rsquo;s Titanic dataset." />
+<link rel="canonical" href="http://luizschiller.com/titanic/" />
+<meta property="og:url" content="http://luizschiller.com/titanic/" />
+<meta property="og:site_name" content="Luiz Schiller" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2016-09-08T00:00:00-03:00" />
+<script type="application/ld+json">
+{"@context": "http://schema.org",
+"@type": "BlogPosting",
+"headline": "Investigating the Titanic Dataset with Python",
+"datePublished": "2016-09-08T00:00:00-03:00",
+"description": "A series of exploratory analyses on Kaggle&rsquo;s Titanic dataset.",
+"url": "http://luizschiller.com/titanic/"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+  <!-- CSS -->
+  <!-- inject:css -->
+  <link rel="stylesheet" href="/assets/stylesheets/style.css">
+  <!-- endinject -->
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/assets/images/touch/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/assets/favicon.ico">
+
+  <!-- RSS -->
+  <link type="application/atom+xml" rel="alternate" href="http://luizschiller.com/feed.xml" title="Luiz Schiller" />
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">Luiz Schiller</a>
+
+    <nav class="site-nav">
+      <a href="#" class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+          <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+          <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+        </svg>
+      </a>
+
+      <div class="trigger">
+        
+          
+        
+          
+            
+              <a class="page-link" href="/about/">About</a>
+            
+          
+        
+          
+            
+          
+        
+          
+            
+          
+        
+          
+            
+          
+        
+          
+            
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">Investigating the Titanic Dataset with Python</h1>
+    <p class="post-meta"><time datetime="2016-09-08T00:00:00-03:00" itemprop="datePublished">Sep 8, 2016</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <h4>Udacity Data Analyst Nanodegree</h4>
+
+<h3>First Glance at Our Data</h3>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="kn">as</span> <span class="nn">sns</span>
+
+<span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+
+<span class="n">filename</span> <span class="o">=</span> <span class="s">'titanic_data.csv'</span>
+<span class="n">titanic_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+</code></pre></div>
+<p>First let&rsquo;s take a quick look at what we&rsquo;ve got:</p>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">titanic_df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</code></pre></div>
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>PassengerId</th>
+      <th>Survived</th>
+      <th>Pclass</th>
+      <th>Name</th>
+      <th>Sex</th>
+      <th>Age</th>
+      <th>SibSp</th>
+      <th>Parch</th>
+      <th>Ticket</th>
+      <th>Fare</th>
+      <th>Cabin</th>
+      <th>Embarked</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>0</td>
+      <td>3</td>
+      <td>Braund, Mr. Owen Harris</td>
+      <td>male</td>
+      <td>22.0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>A/5 21171</td>
+      <td>7.2500</td>
+      <td>NaN</td>
+      <td>S</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>1</td>
+      <td>1</td>
+      <td>Cumings, Mrs. John Bradley (Florence Briggs Th&hellip;</td>
+      <td>female</td>
+      <td>38.0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>PC 17599</td>
+      <td>71.2833</td>
+      <td>C85</td>
+      <td>C</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>1</td>
+      <td>3</td>
+      <td>Heikkinen, Miss. Laina</td>
+      <td>female</td>
+      <td>26.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>STON/O2. 3101282</td>
+      <td>7.9250</td>
+      <td>NaN</td>
+      <td>S</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4</td>
+      <td>1</td>
+      <td>1</td>
+      <td>Futrelle, Mrs. Jacques Heath (Lily May Peel)</td>
+      <td>female</td>
+      <td>35.0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>113803</td>
+      <td>53.1000</td>
+      <td>C123</td>
+      <td>S</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>5</td>
+      <td>0</td>
+      <td>3</td>
+      <td>Allen, Mr. William Henry</td>
+      <td>male</td>
+      <td>35.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>373450</td>
+      <td>8.0500</td>
+      <td>NaN</td>
+      <td>S</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p></br></p>
+
+<h3>Handling Missing Values</h3>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">titanic_df</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
+</code></pre></div><div class="highlight"><pre><code class="language-" data-lang="">&lt;class 'pandas.core.frame.DataFrame'&gt;
+RangeIndex: 891 entries, 0 to 890
+Data columns (total 12 columns):
+PassengerId    891 non-null int64
+Survived       891 non-null int64
+Pclass         891 non-null int64
+Name           891 non-null object
+Sex            891 non-null object
+Age            714 non-null float64
+SibSp          891 non-null int64
+Parch          891 non-null int64
+Ticket         891 non-null object
+Fare           891 non-null float64
+Cabin          204 non-null object
+Embarked       889 non-null object
+dtypes: float64(2), int64(5), object(5)
+memory usage: 66.2+ KB
+</code></pre></div>
+<p>From this initial observation we notice that, from 891 passenger records:
+- 714 have valid ages;
+- only 204 have cabin records;
+- 2 embarkments are missing.</p>
+
+<p>The rows with missing ages and embarkment values will be dropped whenever an analysis depends on them.</p>
+
+<p>The cabin values are not going to be used in this analysis, so they will not be touched.</p>
+
+<h3>Other Considerations</h3>
+
+<p>I&rsquo;m not going to analyze the number of Siblings/Spouses or Parents/Children isolatedly. Instead I am using the presence or not of family members aboard, represented by the &lsquo;Family&rsquo; column.</p>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">titanic_df</span><span class="p">[</span><span class="s">'Family'</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">titanic_df</span><span class="p">[</span><span class="s">'SibSp'</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">titanic_df</span><span class="p">[</span><span class="s">'Parch'</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+</code></pre></div>
+<p>We also are going to need a column stating if a passenger is a child or an adult. 15 is going to be the childhood age threshold for our study.</p>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">titanic_df</span><span class="p">[</span><span class="s">'AgeRange'</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">titanic_df</span><span class="p">[</span><span class="s">'Age'</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">80</span><span class="p">],</span> <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s">'child'</span><span class="p">,</span> <span class="s">'adult'</span><span class="p">])</span>
+</code></pre></div>
+<p>Now I&rsquo;m getting rid of the data we are not going to use:</p>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">titanic_df</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s">'PassengerId'</span><span class="p">,</span> <span class="s">'Name'</span><span class="p">,</span> <span class="s">'SibSp'</span><span class="p">,</span> <span class="s">'Parch'</span><span class="p">,</span> <span class="s">'Ticket'</span><span class="p">,</span> <span class="s">'Cabin'</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</code></pre></div>
+<p>Which leaves us with the following columns, plus &lsquo;Sex&rsquo;, &lsquo;Embarked&rsquo; and &lsquo;Family&rsquo;:</p>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">titanic_df</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+</code></pre></div>
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Survived</th>
+      <th>Pclass</th>
+      <th>Age</th>
+      <th>Fare</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>count</th>
+      <td>891.000000</td>
+      <td>891.000000</td>
+      <td>714.000000</td>
+      <td>891.000000</td>
+    </tr>
+    <tr>
+      <th>mean</th>
+      <td>0.383838</td>
+      <td>2.308642</td>
+      <td>29.699118</td>
+      <td>32.204208</td>
+    </tr>
+    <tr>
+      <th>std</th>
+      <td>0.486592</td>
+      <td>0.836071</td>
+      <td>14.526497</td>
+      <td>49.693429</td>
+    </tr>
+    <tr>
+      <th>min</th>
+      <td>0.000000</td>
+      <td>1.000000</td>
+      <td>0.420000</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>25%</th>
+      <td>0.000000</td>
+      <td>2.000000</td>
+      <td>NaN</td>
+      <td>7.910400</td>
+    </tr>
+    <tr>
+      <th>50%</th>
+      <td>0.000000</td>
+      <td>3.000000</td>
+      <td>NaN</td>
+      <td>14.454200</td>
+    </tr>
+    <tr>
+      <th>75%</th>
+      <td>1.000000</td>
+      <td>3.000000</td>
+      <td>NaN</td>
+      <td>31.000000</td>
+    </tr>
+    <tr>
+      <th>max</th>
+      <td>1.000000</td>
+      <td>3.000000</td>
+      <td>80.000000</td>
+      <td>512.329200</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p></br></p>
+
+<p>We can see that aproximately 38% of the passengers survived and the highest fare is over 15 times the average.</p>
+
+<h3>Let&rsquo;s raise some questions:</h3>
+
+<ol>
+<li>What is the survival rate by class, sex and age? What about combining these factors?</li>
+<li>Was the fare the same for men and women?</li>
+<li>What fraction of the passengers embarked on each port? Is there a difference in their survival rates?</li>
+<li>Is the presence of a family member a good indicator for survival?</li>
+</ol>
+
+<h3>1. What is the survival rate by class, sex and age? What about combining these factors?</h3>
+
+<p>Let&rsquo;s take a look at the distribution of passengers by age and fare, grouped by sex and class, and with survival information. It will give us some global insights about the data. But first, removing rows with missing ages:</p>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">titanic_df_clean_age</span> <span class="o">=</span> <span class="n">titanic_df</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s">'Age'</span><span class="p">])</span>
+</code></pre></div><div class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">scatter_plot_class</span><span class="p">(</span><span class="n">pclass</span><span class="p">):</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">FacetGrid</span><span class="p">(</span><span class="n">titanic_df_clean_age</span><span class="p">[</span><span class="n">titanic_df_clean_age</span><span class="p">[</span><span class="s">'Pclass'</span><span class="p">]</span> <span class="o">==</span> <span class="n">pclass</span><span class="p">],</span> 
+                      <span class="n">col</span><span class="o">=</span><span class="s">'Sex'</span><span class="p">,</span>
+                      <span class="n">col_order</span><span class="o">=</span><span class="p">[</span><span class="s">'male'</span><span class="p">,</span> <span class="s">'female'</span><span class="p">],</span>
+                      <span class="n">hue</span><span class="o">=</span><span class="s">'Survived'</span><span class="p">,</span> 
+                      <span class="n">hue_kws</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">marker</span><span class="o">=</span><span class="p">[</span><span class="s">'v'</span><span class="p">,</span> <span class="s">'^'</span><span class="p">]),</span> 
+                      <span class="n">size</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="nb">map</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">,</span> <span class="s">'Age'</span><span class="p">,</span> <span class="s">'Fare'</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s">'w'</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">80</span><span class="p">)</span><span class="o">.</span><span class="n">add_legend</span><span class="p">())</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">top</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s">'CLASS {}'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pclass</span><span class="p">))</span>
+
+<span class="c"># plotted separately because the fare scale for the first class makes it difficult to visualize second and third class charts</span>
+<span class="n">scatter_plot_class</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">scatter_plot_class</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">scatter_plot_class</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</code></pre></div>
+<p><img src="/assets/images/titanic/output_20_0.png" alt="png"></p>
+
+<p><img src="/assets/images/titanic/output_20_1.png" alt="png"></p>
+
+<p><img src="/assets/images/titanic/output_20_2.png" alt="png"></p>
+
+<p>It seems like women have a much higher survival rate, specially in first and second classes. It seems too that children have a higher survival rate, specially in first and second classes again. Let&rsquo;s find out the survival rate by class, sex and age range, and plot the results for a better understanding:</p>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">survived_by_class</span> <span class="o">=</span> <span class="n">titanic_df_clean_age</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s">'Pclass'</span><span class="p">)[</span><span class="s">'Survived'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">survived_by_class</span>
+</code></pre></div><div class="highlight"><pre><code class="language-" data-lang="">Pclass
+1    0.655914
+2    0.479769
+3    0.239437
+Name: Survived, dtype: float64
+</code></pre></div><div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">survived_by_sex</span> <span class="o">=</span> <span class="n">titanic_df_clean_age</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s">'Sex'</span><span class="p">)[</span><span class="s">'Survived'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">survived_by_sex</span>
+</code></pre></div><div class="highlight"><pre><code class="language-" data-lang="">Sex
+female    0.754789
+male      0.205298
+Name: Survived, dtype: float64
+</code></pre></div><div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">survived_by_age</span> <span class="o">=</span> <span class="n">titanic_df_clean_age</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s">'AgeRange'</span><span class="p">)[</span><span class="s">'Survived'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">survived_by_age</span>
+</code></pre></div><div class="highlight"><pre><code class="language-" data-lang="">AgeRange
+child    0.590361
+adult    0.381933
+Name: Survived, dtype: float64
+</code></pre></div><div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">fig</span><span class="p">,</span> <span class="p">(</span><span class="n">axis1</span><span class="p">,</span><span class="n">axis2</span><span class="p">,</span><span class="n">axis3</span><span class="p">)</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+
+<span class="n">ax</span> <span class="o">=</span> <span class="n">survived_by_class</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">axis1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">'#5975A4'</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s">'Survival Rate by Class'</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">'Survival Rate'</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">survived_by_sex</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">axis2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">'#5F9E6E'</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s">'Survival Rate by Sex'</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">survived_by_age</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">axis3</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">'#B55D60'</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s">'Survival Rate by Age Range'</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">)</span>
+</code></pre></div><div class="highlight"><pre><code class="language-" data-lang="">(0.0, 1.0)
+</code></pre></div>
+<p><img src="/assets/images/titanic/output_25_1.png" alt="png"></p>
+
+<p>As expected (since we all watched the Titanic movie 😉), the first class has a higher survival rate than the second, which has a higher survival rate than the third, and women and children have a higher chance of survival than men and adults, respectively.</p>
+
+<p>Now combining the three factors and visualizing the plots:</p>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">grouped_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
+    <span class="p">[</span><span class="n">titanic_df_clean_age</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s">'Pclass'</span><span class="p">,</span> <span class="s">'Sex'</span><span class="p">,</span> <span class="s">'AgeRange'</span><span class="p">])[</span><span class="s">'Survived'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span>
+     <span class="n">titanic_df_clean_age</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s">'Pclass'</span><span class="p">,</span> <span class="s">'Sex'</span><span class="p">,</span> <span class="s">'AgeRange'</span><span class="p">])[</span><span class="s">'Survived'</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">()],</span>
+    <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">grouped_data</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s">'Survived'</span><span class="p">,</span> <span class="s">'Count'</span><span class="p">]</span>
+<span class="n">grouped_data</span>
+</code></pre></div>
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th></th>
+      <th></th>
+      <th>Survived</th>
+      <th>Count</th>
+    </tr>
+    <tr>
+      <th>Pclass</th>
+      <th>Sex</th>
+      <th>AgeRange</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th rowspan="4" valign="top">1</th>
+      <th rowspan="2" valign="top">female</th>
+      <th>child</th>
+      <td>0.666667</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>adult</th>
+      <td>0.975610</td>
+      <td>82</td>
+    </tr>
+    <tr>
+      <th rowspan="2" valign="top">male</th>
+      <th>child</th>
+      <td>1.000000</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>adult</th>
+      <td>0.377551</td>
+      <td>98</td>
+    </tr>
+    <tr>
+      <th rowspan="4" valign="top">2</th>
+      <th rowspan="2" valign="top">female</th>
+      <th>child</th>
+      <td>1.000000</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <th>adult</th>
+      <td>0.906250</td>
+      <td>64</td>
+    </tr>
+    <tr>
+      <th rowspan="2" valign="top">male</th>
+      <th>child</th>
+      <td>1.000000</td>
+      <td>9</td>
+    </tr>
+    <tr>
+      <th>adult</th>
+      <td>0.066667</td>
+      <td>90</td>
+    </tr>
+    <tr>
+      <th rowspan="4" valign="top">3</th>
+      <th rowspan="2" valign="top">female</th>
+      <th>child</th>
+      <td>0.533333</td>
+      <td>30</td>
+    </tr>
+    <tr>
+      <th>adult</th>
+      <td>0.430556</td>
+      <td>72</td>
+    </tr>
+    <tr>
+      <th rowspan="2" valign="top">male</th>
+      <th>child</th>
+      <td>0.321429</td>
+      <td>28</td>
+    </tr>
+    <tr>
+      <th>adult</th>
+      <td>0.128889</td>
+      <td>225</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p></br></p>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">g</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">factorplot</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="s">'AgeRange'</span><span class="p">,</span> 
+    <span class="n">y</span><span class="o">=</span><span class="s">'Survived'</span><span class="p">,</span> 
+    <span class="n">col</span><span class="o">=</span><span class="s">'Pclass'</span><span class="p">,</span>
+    <span class="n">row</span><span class="o">=</span><span class="s">'Sex'</span><span class="p">,</span>
+    <span class="n">data</span><span class="o">=</span><span class="n">titanic_df_clean_age</span><span class="p">,</span>
+    <span class="n">margin_titles</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> 
+    <span class="n">kind</span><span class="o">=</span><span class="s">"bar"</span><span class="p">,</span> 
+    <span class="n">ci</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+</code></pre></div>
+<p><img src="/assets/images/titanic/output_28_0.png" alt="png"></p>
+
+<p>Analysing the three factors combined gives us expected results too. It is interesting to see that even the women from the third class have a higher survival rate than the men from first. It indicates that saving women had a higher priority than saving the richer classes.</p>
+
+<p>Saving children also seemed like a higher priority as on all permutations of factors except first class women, where one of three female children died, they had a higher survival rate. </p>
+
+<p>So we can conclude that saving women and children was indeed a priority on the Titanic shipwreck.</p>
+
+<h3>2. Was the fare the same for men and women?</h3>
+
+<p>While looking at the scatter plots shown in the first question I noticed that women seemed to be more spreaded among the &lsquo;Fare&rsquo; axis, so it motivated me to check if the average fare paid by women was really higher than men&rsquo;s.</p>
+
+<p>Let&rsquo;s check the mean fare paid by each sex:</p>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">fare_by_sex</span> <span class="o">=</span> <span class="n">titanic_df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s">'Sex'</span><span class="p">)[</span><span class="s">'Fare'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">fare_by_sex</span>
+</code></pre></div><div class="highlight"><pre><code class="language-" data-lang="">Sex
+female    44.479818
+male      25.523893
+Name: Fare, dtype: float64
+</code></pre></div><div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">ax</span> <span class="o">=</span> <span class="n">fare_by_sex</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s">'Fare Average and Sex'</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">'Average Fare'</span><span class="p">)</span>
+</code></pre></div><div class="highlight"><pre><code class="language-" data-lang="">&lt;matplotlib.text.Text at 0xa7d69b0&gt;
+</code></pre></div>
+<p><img src="/assets/images/titanic/output_32_1.png" alt="png"></p>
+
+<p>It indeed seems that women paid way more than men on average. Women&rsquo;s average fare is higher than I expected. Maybe it is due to the women of the first class. Let&rsquo;s group the data by class and check it out:</p>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">fare_by_class_sex</span> <span class="o">=</span> <span class="n">titanic_df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s">'Pclass'</span><span class="p">,</span> <span class="s">'Sex'</span><span class="p">])[</span><span class="s">'Fare'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">fare_by_class_sex</span>
+</code></pre></div><div class="highlight"><pre><code class="language-" data-lang="">Pclass  Sex   
+1       female    106.125798
+        male       67.226127
+2       female     21.970121
+        male       19.741782
+3       female     16.118810
+        male       12.661633
+Name: Fare, dtype: float64
+</code></pre></div><div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">ax</span> <span class="o">=</span> <span class="n">fare_by_class_sex</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span><span class="s">'Fare Average by Class and Sex'</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">'Average Fare'</span><span class="p">)</span>
+</code></pre></div><div class="highlight"><pre><code class="language-" data-lang="">&lt;matplotlib.text.Text at 0x8c7e590&gt;
+</code></pre></div>
+<p><img src="/assets/images/titanic/output_35_1.png" alt="png"></p>
+
+<p>The average fare paid by women is higher than men&rsquo;s on every class, although the fares on second class are almost equal.
+I wonder why women paid more&hellip; Maybe they demanded more privileges than men, but who knows&hellip;</p>
+
+<h3>3. What fraction of the passengers embarked on each port? Is there a difference in their survival rates?</h3>
+
+<p>Just for curiosity&rsquo;s sake, let&rsquo;s find out the proportion of passengers embarked on each port (C = Cherbourg; Q = Queenstown; S = Southampton), and their survival rates, but first, removing rows with missing embarkment values:</p>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">titanic_df_clean_embarked</span> <span class="o">=</span> <span class="n">titanic_df</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s">'Embarked'</span><span class="p">])</span>
+</code></pre></div><div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">embarked</span> <span class="o">=</span> <span class="n">titanic_df_clean_embarked</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s">'Embarked'</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">embarked</span><span class="p">[</span><span class="s">'Count'</span><span class="p">]</span> <span class="o">=</span> <span class="n">titanic_df_clean_embarked</span><span class="p">[</span><span class="s">'Embarked'</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+<span class="n">embarked</span>
+</code></pre></div>
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Survived</th>
+      <th>Pclass</th>
+      <th>Age</th>
+      <th>Fare</th>
+      <th>Family</th>
+      <th>Count</th>
+    </tr>
+    <tr>
+      <th>Embarked</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>C</th>
+      <td>0.553571</td>
+      <td>1.886905</td>
+      <td>30.814769</td>
+      <td>59.954144</td>
+      <td>0.494048</td>
+      <td>168</td>
+    </tr>
+    <tr>
+      <th>Q</th>
+      <td>0.389610</td>
+      <td>2.909091</td>
+      <td>28.089286</td>
+      <td>13.276030</td>
+      <td>0.259740</td>
+      <td>77</td>
+    </tr>
+    <tr>
+      <th>S</th>
+      <td>0.336957</td>
+      <td>2.350932</td>
+      <td>29.445397</td>
+      <td>27.079812</td>
+      <td>0.389752</td>
+      <td>644</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p></br></p>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">fig</span><span class="p">,</span> <span class="p">(</span><span class="n">axis1</span><span class="p">,</span><span class="n">axis2</span><span class="p">)</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+
+<span class="n">sns</span><span class="o">.</span><span class="n">countplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s">'Embarked'</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">titanic_df_clean_embarked</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="p">[</span><span class="s">'S'</span><span class="p">,</span><span class="s">'C'</span><span class="p">,</span><span class="s">'Q'</span><span class="p">],</span> <span class="n">ax</span><span class="o">=</span><span class="n">axis1</span><span class="p">)</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">barplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">embarked</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s">'Survived'</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">embarked</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="p">[</span><span class="s">'S'</span><span class="p">,</span><span class="s">'C'</span><span class="p">,</span><span class="s">'Q'</span><span class="p">],</span> <span class="n">ax</span><span class="o">=</span><span class="n">axis2</span><span class="p">)</span>
+</code></pre></div><div class="highlight"><pre><code class="language-" data-lang="">&lt;matplotlib.axes._subplots.AxesSubplot at 0xa98cb30&gt;
+</code></pre></div>
+<p><img src="/assets/images/titanic/output_40_1.png" alt="png"></p>
+
+<p>The survival rate for passengers embarked on Cherbourg is higher than both other ports&rsquo;. That is no wonder, since the mean &lsquo;Pclass&rsquo; value for this port is 1.89 - way lower than Queenstown&rsquo;s 2.91 and Southampton&rsquo;s 2.35 - which means that people that embarked there belonged to richer classes, which we&rsquo;ve already seen that have better survival rates than the poorer ones.</p>
+
+<h3>4. Is the presence of a family member a good indicator for survival?</h3>
+
+<p>Finally, let&rsquo;s check if having a family member aboard means a higher survival chance:</p>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">survived_by_family</span> <span class="o">=</span> <span class="n">titanic_df_clean_age</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s">'Family'</span><span class="p">)[</span><span class="s">'Survived'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">survived_by_family</span>
+</code></pre></div><div class="highlight"><pre><code class="language-" data-lang="">Family
+False    0.321782
+True     0.516129
+Name: Survived, dtype: float64
+</code></pre></div><div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">ax</span> <span class="o">=</span> <span class="n">survived_by_family</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s">'#5975A4'</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s">'Survival Rate by Family Presence'</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">'Survival Rate'</span><span class="p">)</span>
+</code></pre></div><div class="highlight"><pre><code class="language-" data-lang="">&lt;matplotlib.text.Text at 0xaa26b90&gt;
+</code></pre></div>
+<p><img src="/assets/images/titanic/output_44_1.png" alt="png"></p>
+
+<p>The data shows that having a family member aboard indicates a better chance for survival. But why is that? Let&rsquo;s check some other numbers about family presence, like it&rsquo;s relation with class, sex and age range:</p>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">family_by_class</span> <span class="o">=</span> <span class="n">titanic_df_clean_age</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s">'Pclass'</span><span class="p">)[</span><span class="s">'Family'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">family_by_class</span>
+</code></pre></div><div class="highlight"><pre><code class="language-" data-lang="">Pclass
+1    0.537634
+2    0.462428
+3    0.366197
+Name: Family, dtype: float64
+</code></pre></div><div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">family_by_sex</span> <span class="o">=</span> <span class="n">titanic_df_clean_age</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s">'Sex'</span><span class="p">)[</span><span class="s">'Family'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">family_by_sex</span>
+</code></pre></div><div class="highlight"><pre><code class="language-" data-lang="">Sex
+female    0.616858
+male      0.328918
+Name: Family, dtype: float64
+</code></pre></div><div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">family_by_age</span> <span class="o">=</span> <span class="n">titanic_df_clean_age</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s">'AgeRange'</span><span class="p">)[</span><span class="s">'Family'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">family_by_age</span>
+</code></pre></div><div class="highlight"><pre><code class="language-" data-lang="">AgeRange
+child    0.927711
+adult    0.369255
+Name: Family, dtype: float64
+</code></pre></div><div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">fig</span><span class="p">,</span> <span class="p">(</span><span class="n">axis1</span><span class="p">,</span><span class="n">axis2</span><span class="p">,</span><span class="n">axis3</span><span class="p">)</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+
+<span class="n">ax</span> <span class="o">=</span> <span class="n">family_by_class</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">axis1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">'#5975A4'</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s">'Family Presence by Class'</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">'Average Family Presence'</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">family_by_sex</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">axis2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">'#5F9E6E'</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s">'Family Presence by Sex'</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">family_by_age</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">axis3</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">'#B55D60'</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s">'Family Presence by Age Range'</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">)</span>
+</code></pre></div><div class="highlight"><pre><code class="language-" data-lang="">(0.0, 1.0)
+</code></pre></div>
+<p><img src="/assets/images/titanic/output_49_1.png" alt="png"></p>
+
+<p>We can see that family presence is higher on:
+- first class;
+- female sex;
+- children.</p>
+
+<p>We have already discovered that these three factors show a higher survival rate, so maybe the higher survival rate for passengers with family members is more due to them than to the presence of family itself.</p>
+
+<h3>Conclusion</h3>
+
+<p>All the results presented on this report just show correlations between pieces of data. It is important to highlight that correlation does not imply causation. To make statistically valid statements, tests like chi-squared tests and t-tests should be applied.</p>
+
+<p>To discover if class, sex and age have a relationship with survival, we make four chi-squared tests - one for each variable individually, and one for all combined - and find out if they really do matter, as this study suggests.</p>
+
+<p>The same goes to find out if the embarkment site or the presence of a family member have relationships with survival.</p>
+
+<p>To find out if the average fare was the same for men and women we must hypothesize that there was no difference, and then make a t-test to check if the difference is significative as this study suggests.</p>
+
+<p>Thank you for reading!</p>
+
+  </div>
+
+</article>
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Luiz Schiller</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li>Luiz Schiller</li>
+          <li><a href="mailto:schillerbr@gmail.com">schillerbr@gmail.com</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <ul class="social-media-list">
+          
+
+          
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p>Data Science by Luiz Schiller</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  <!-- JS -->
+  <!-- inject:js -->
+  <script src="/assets/javascript/index.js"></script>
+  <!-- endinject -->
+
+  </body>
+
+</html>

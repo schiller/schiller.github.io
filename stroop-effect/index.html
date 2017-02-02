@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- SEO -->
+  <!-- Begin Jekyll SEO tag v2.1.0 -->
+<title>Stroop Effect - Testing a Perceptual Phenomenon - Luiz Schiller</title>
+<meta property="og:title" content="Stroop Effect - Testing a Perceptual Phenomenon" />
+<meta name="description" content="Hypothesis testing regarding this phenomenon of experimental psychology called Stroop Effect." />
+<meta property="og:description" content="Hypothesis testing regarding this phenomenon of experimental psychology called Stroop Effect." />
+<link rel="canonical" href="http://luizschiller.com/stroop-effect/" />
+<meta property="og:url" content="http://luizschiller.com/stroop-effect/" />
+<meta property="og:site_name" content="Luiz Schiller" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2016-08-20T00:00:00-03:00" />
+<script type="application/ld+json">
+{"@context": "http://schema.org",
+"@type": "BlogPosting",
+"headline": "Stroop Effect - Testing a Perceptual Phenomenon",
+"datePublished": "2016-08-20T00:00:00-03:00",
+"description": "Hypothesis testing regarding this phenomenon of experimental psychology called Stroop Effect.",
+"url": "http://luizschiller.com/stroop-effect/"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+  <!-- CSS -->
+  <!-- inject:css -->
+  <link rel="stylesheet" href="/assets/stylesheets/style.css">
+  <!-- endinject -->
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/assets/images/touch/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/assets/favicon.ico">
+
+  <!-- RSS -->
+  <link type="application/atom+xml" rel="alternate" href="http://luizschiller.com/feed.xml" title="Luiz Schiller" />
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">Luiz Schiller</a>
+
+    <nav class="site-nav">
+      <a href="#" class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+          <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+          <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+        </svg>
+      </a>
+
+      <div class="trigger">
+        
+          
+        
+          
+            
+              <a class="page-link" href="/about/">About</a>
+            
+          
+        
+          
+            
+          
+        
+          
+            
+          
+        
+          
+            
+          
+        
+          
+            
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">Stroop Effect - Testing a Perceptual Phenomenon</h1>
+    <p class="post-meta"><time datetime="2016-08-20T00:00:00-03:00" itemprop="datePublished">Aug 20, 2016</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <h4>Udacity Data Analyst Nanodegree</h4>
+
+<h3>Project Overview</h3>
+
+<p>In this project, you will investigate a classic phenomenon from experimental psychology called the <a href="https://en.wikipedia.org/wiki/Stroop_effect">Stroop Effect</a>. You will learn a little bit about the experiment, create a hypothesis regarding the outcome of the task, then go through the task yourself. You will then look at some data collected from others who have performed the same task and will compute some statistics describing the results. Finally, you will interpret your results in terms of your hypotheses.</p>
+
+<p>Find the spreadsheet with the calculations here: <a href="https://docs.google.com/spreadsheets/d/194Vc8K5SPjlEYZL97j4oDCDcvbP2ZrwNA6rtQ4NVMKQ/edit?usp=sharing">https://docs.google.com/spreadsheets/d/194Vc8K5SPjlEYZL97j4oDCDcvbP2ZrwNA6rtQ4NVMKQ/edit?usp=sharing</a></p>
+
+<h3>1. What is our independent variable? What is our dependent variable?</h3>
+
+<p>Independent: the words condition (congruent or incongruent);
+Dependent: the time it takes to name the ink colors.</p>
+
+<h3>2. What is an appropriate set of hypotheses for this task? What kind of statistical test do you expect to perform? Justify your choices.</h3>
+
+<p><strong>Null hypothesis (H0)</strong>: The mean time for the population to name the ink colors is equal for the Congruent and Incongruent conditions (μC = μI);</p>
+
+<p><strong>Alternative Hypothesis (H1)</strong>: The mean time for the population to name the ink colors is different for the Congruent and Incongruent conditions (μC = μI);</p>
+
+<p>We expect to perform a paired t-test, because:
+- We assume the distributions are normal;
+- The two samples are dependent;
+- We do not know the population’s standard deviation;
+- The samples size is below 30.</p>
+
+<h3>3. Report some descriptive statistics regarding this dataset. Include at least one measure of central tendency and at least one measure of variability.</h3>
+
+<p>Mean difference: -7.96
+Standard deviation of the difference: 4.86
+Standard error of the mean difference: .99</p>
+
+<h3>4. Provide one or two visualizations that show the distribution of the sample data. Write one or two sentences noting what you observe about the plot or plots.</h3>
+
+<p><img src="/assets/images/stroop-effect/scatterplot.png" alt="Incongruent vs Congruent">
+The scatter plot shows some degree of correlation between the two samples.</p>
+
+<p><img src="/assets/images/stroop-effect/histograms.png" alt="Histograms">
+The histograms show that the times on the incongruent sample are larger than on the congruent sample.</p>
+
+<h3>5. Now, perform the statistical test and report your results. What is your confidence level and your critical statistic value? Do you reject the null hypothesis or fail to reject it? Come to a conclusion in terms of the experiment task. Did the results match up with your expectations?</h3>
+
+<p>Confidence level = 99%</p>
+
+<p>Alpha = .01</p>
+
+<p>t-critical two-tailed = +-2.807</p>
+
+<p>t-statistic = -8.021</p>
+
+<p>r² = .737</p>
+
+<p>Our t-statistic is less than the negative t-critical (-8.021 &lt; -2.807) so we reject the null hypothesis.</p>
+
+<p>This result means that the difference between the congruent and incongruent samples is statistically significant. Based on our r², 73.7% of this difference is due to the words condition (congruent or incongruent). The results match my expectations. </p>
+
+<h3>6. Optional: What do you think is responsible for the effects observed? Can you think of an alternative or similar task that would result in a similar effect? Some research about the problem will be helpful for thinking about these two questions!</h3>
+
+<p>Since understanding the meaning of words is an automatic process as a result of habitual reading, and recognizing colors is not, the brain spends attentional resources on it, interfering with the color recognition.
+A similar experiment could be to show up or down arrows, randomly above or below a central point (incongruent), and compare it to showing up arrows above and down arrows below a central point (congruent).</p>
+
+<h3>REFERENCES:</h3>
+
+<p><a href="https://en.wikipedia.org/wiki/Stroop_effect">https://en.wikipedia.org/wiki/Stroop_effect</a></p>
+
+  </div>
+
+</article>
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Luiz Schiller</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li>Luiz Schiller</li>
+          <li><a href="mailto:schillerbr@gmail.com">schillerbr@gmail.com</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <ul class="social-media-list">
+          
+
+          
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p>Data Science by Luiz Schiller</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  <!-- JS -->
+  <!-- inject:js -->
+  <script src="/assets/javascript/index.js"></script>
+  <!-- endinject -->
+
+  </body>
+
+</html>

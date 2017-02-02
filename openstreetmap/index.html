@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- SEO -->
+  <!-- Begin Jekyll SEO tag v2.1.0 -->
+<title>OpenStreetMap Data Wrangling - Luiz Schiller</title>
+<meta property="og:title" content="OpenStreetMap Data Wrangling" />
+<meta name="description" content="Assessing the quality of OpenStreetMap data for validity, accuracy, completeness, consistency and uniformity." />
+<meta property="og:description" content="Assessing the quality of OpenStreetMap data for validity, accuracy, completeness, consistency and uniformity." />
+<link rel="canonical" href="http://luizschiller.com/openstreetmap/" />
+<meta property="og:url" content="http://luizschiller.com/openstreetmap/" />
+<meta property="og:site_name" content="Luiz Schiller" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2016-10-08T00:00:00-03:00" />
+<script type="application/ld+json">
+{"@context": "http://schema.org",
+"@type": "BlogPosting",
+"headline": "OpenStreetMap Data Wrangling",
+"datePublished": "2016-10-08T00:00:00-03:00",
+"description": "Assessing the quality of OpenStreetMap data for validity, accuracy, completeness, consistency and uniformity.",
+"url": "http://luizschiller.com/openstreetmap/"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+  <!-- CSS -->
+  <!-- inject:css -->
+  <link rel="stylesheet" href="/assets/stylesheets/style.css">
+  <!-- endinject -->
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/assets/images/touch/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/assets/favicon.ico">
+
+  <!-- RSS -->
+  <link type="application/atom+xml" rel="alternate" href="http://luizschiller.com/feed.xml" title="Luiz Schiller" />
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">Luiz Schiller</a>
+
+    <nav class="site-nav">
+      <a href="#" class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+          <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+          <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+        </svg>
+      </a>
+
+      <div class="trigger">
+        
+          
+        
+          
+            
+              <a class="page-link" href="/about/">About</a>
+            
+          
+        
+          
+            
+          
+        
+          
+            
+          
+        
+          
+            
+          
+        
+          
+            
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">OpenStreetMap Data Wrangling</h1>
+    <p class="post-meta"><time datetime="2016-10-08T00:00:00-03:00" itemprop="datePublished">Oct 8, 2016</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <h4>Udacity Data Analyst Nanodegree</h4>
+
+<h2>Project Overview</h2>
+
+<p>Choose any area of the world in <a href="https://www.openstreetmap.org">Open Street Map</a> and use data munging techniques, such as assessing the quality of the data for validity, accuracy, completeness, consistency and uniformity, to clean the OpenStreetMap data for a part of the world that you care about. Choose to learn SQL or MongoDB and apply your chosen schema to the project.</p>
+
+<p>Find the Python code for the project here: <a href="https://github.com/schiller/wrangle-open-street-map-data">https://github.com/schiller/wrangle-open-street-map-data</a></p>
+
+<h3>Map Area: Rio de Janeiro, Brazil</h3>
+
+<ul>
+<li><a href="https://mapzen.com/data/metro-extracts/metro/rio-de-janeiro_brazil/">https://mapzen.com/data/metro-extracts/metro/rio-de-janeiro_brazil/</a></li>
+</ul>
+
+<p>This area contains three cities that had a great part in my history. I lived about one third of my life on each: Petrópolis (where I was born), Niterói and Rio de Janeiro. That said, I would like to explore this extract a little bit and see what interesting data I can find.</p>
+
+<h2>Problems Encountered in the Map</h2>
+
+<p>After the initial cleaning on the data from the downloaded xml file, it was imported into mongodb using the following command:
+<code>
+mongoimport --db osm --collection rio --file rio-de-janeiro_brazil.osm.json
+</code></p>
+
+<p>The elements were structured like this:</p>
+<div class="highlight"><pre><code class="language-json" data-lang="json"><span class="p">{</span><span class="w">
+</span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2406124091"</span><span class="p">,</span><span class="w">
+</span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"node"</span><span class="p">,</span><span class="w">
+</span><span class="nt">"created"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"version"</span><span class="p">:</span><span class="s2">"2"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"changeset"</span><span class="p">:</span><span class="s2">"17206049"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="s2">"2013-08-03T16:43:42Z"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"user"</span><span class="p">:</span><span class="s2">"linuxUser16"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"uid"</span><span class="p">:</span><span class="s2">"1219059"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+</span><span class="nt">"pos"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mf">41.9757030</span><span class="p">,</span><span class="w"> </span><span class="mf">-87.6921867</span><span class="p">],</span><span class="w">
+</span><span class="nt">"address"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"housenumber"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5157"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"postcode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"24230-062"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"street"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Rua Moreira César"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+</span><span class="nt">"amenity"</span><span class="p">:</span><span class="w"> </span><span class="s2">"restaurant"</span><span class="p">,</span><span class="w">
+</span><span class="nt">"cuisine"</span><span class="p">:</span><span class="w"> </span><span class="s2">"mexican"</span><span class="p">,</span><span class="w">
+</span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"La Cabana De Don Luis"</span><span class="p">,</span><span class="w">
+</span><span class="nt">"phone"</span><span class="p">:</span><span class="w"> </span><span class="s2">"+55-21-95757782"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>
+<p>Analyzing a sample of the data, some problems showed up:</p>
+
+<ul>
+<li>Tags with k=&ldquo;type&rdquo; overriding the element&rsquo;s &lsquo;type&rsquo; field;</li>
+<li>String &lsquo;bicycle_parking&rsquo; capacities instead of numbers;</li>
+<li>Abbreviated street types in &lsquo;address.street&rsquo; tag;</li>
+<li>Many different formats in &lsquo;phone&rsquo; field;</li>
+<li>pprint.pprint method not printing Unicode characters properly.</li>
+</ul>
+
+<h3>Tags with k=&ldquo;type&rdquo; overriding the element&rsquo;s &lsquo;type&rsquo; field</h3>
+
+<p>Second level &lsquo;k&rsquo; tags with the value &lsquo;type&rsquo; were overriding the element&rsquo;s &lsquo;type&rsquo; field, which should equal &lsquo;node&rsquo; or &lsquo;way&rsquo; only. These tags were mapped to the element with the &lsquo;type_tag&rsquo; key before being imported to mongodb.</p>
+
+<h3>String &lsquo;bicycle_parking&rsquo; capacities instead of numbers</h3>
+
+<p>Nodes representing bicycle parkings had their capacity fields as strings, which did not allow numeric operations I was willing to make with them. All of them represented numbers, except for one &lsquo;§0&rsquo; value. To solve this, I iterated over the xml file, updating the values with the parsed integer values. Whenever the parsing failed, the &lsquo;capacity&rsquo; field was removed. The code used for the removal is shown below:</p>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">handle_bicycle_parking_capacity</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+    <span class="k">if</span> <span class="p">(</span><span class="s">'amenity'</span> <span class="ow">in</span> <span class="n">node</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">node</span><span class="p">[</span><span class="s">'amenity'</span><span class="p">]</span> <span class="o">==</span> <span class="s">'bicycle_parking'</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s">'capacity'</span> <span class="ow">in</span> <span class="n">node</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">node</span><span class="p">[</span><span class="s">'capacity'</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">node</span><span class="p">[</span><span class="s">'capacity'</span><span class="p">])</span>
+            <span class="k">except</span> <span class="nb">ValueError</span><span class="p">:</span>
+                <span class="n">node</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">'capacity'</span><span class="p">)</span>
+</code></pre></div>
+<h3>Abbreviated street types in &lsquo;address.street&rsquo; tag</h3>
+
+<p>There were several street names with it&rsquo;s type abbreviated, for example:
+<code>
+Estr. da Paciência
+Av Castelo Branco
+R. Miguel Gustavo
+</code>
+It is worth noting that in Portuguese the street types appear at the beginning of a street name, in contrast with English, where it appears at the end.
+To deal with this a mapping was created to convert abbreviations to complete street types:
+<code>python
+mapping = { &quot;Av&quot;: &quot;Avenida&quot;,
+            &quot;Av.&quot;: &quot;Avenida&quot;,
+            &quot;Est.&quot;: &quot;Estrada&quot;,
+            &quot;Estr.&quot;: &quot;Estrada&quot;,
+            &quot;estrada&quot;: &quot;Estrada&quot;,
+            &quot;Pca&quot;: u&quot;Praça&quot;,
+            &quot;Praca&quot;: u&quot;Praça&quot;,
+            u&quot;Pça&quot;: u&quot;Praça&quot;,
+            u&quot;Pça.&quot;: u&quot;Praça&quot;,
+            &quot;R.&quot;: &quot;Rua&quot;,
+            &quot;RUA&quot;: &quot;Rua&quot;,
+            &quot;rua&quot;: &quot;Rua&quot;,
+            &quot;Ruas&quot;: &quot;Rua&quot;,
+            &quot;Rue&quot;: &quot;Rua&quot;,
+            &quot;Rod.&quot;: &quot;Rodovia&quot;,
+            &quot;Trav&quot;: &quot;Travessa&quot; }
+</code>
+After the update, the abbreviation problem was solved for almost all cases, excluding only stranger ones probably caused by human erroneous inputs.</p>
+
+<h3>Many different formats in &lsquo;phone&rsquo; field</h3>
+
+<p>The &lsquo;phone&rsquo; field of most elements was filled with various different formats of phone number, and many times more than one phone number was inserted in the same field.
+To organize this data I defined a standard pattern for the phone values, and audited the file classifying the values into four groups: ok, wrong_separators, missing_area_code and other. The groups were defined by regular expressions as follows:</p>
+
+<h4>ok</h4>
+<div class="highlight"><pre><code class="language-" data-lang=""># +55 99 99999999
+phone_ok_re = re.compile(r'^\+55\s\d{2}\s\d{8,9}$')
+# 0800 999 9999
+phone_0800_ok_re = re.compile(r'^0800\s\d{3}\s\d{4}$')
+</code></pre></div>
+<h4>wrong_separators</h4>
+<div class="highlight"><pre><code class="language-" data-lang=""># 55-99-9-99999999
+wrong_separators_re = re.compile(r'^\D*55\D*\d{2}\D*(\d\D?)?\d{4}\D?\d{4}$')
+# +55-99-0800-999-9999
+wrong_separators_0800_re = re.compile(r'^\D*(55)?\D*(\d{2})?\D*0800\D?\d{3}\D?\d\D?\d{3}$')
+</code></pre></div>
+<h4>missing_area_code</h4>
+<div class="highlight"><pre><code class="language-" data-lang=""># missing +55 (Rio area codes start with 2)
+missing_ddi_re = re.compile(r'^\D*2\d\D*(\d\D?)?\d{4}\D?\d{4}$')
+# missing +55 2X
+missing_ddd_re = re.compile(r'^(\d\D?)?\d{4}\D?\d{4}$')
+</code></pre></div>
+<h4>other</h4>
+<div class="highlight"><pre><code class="language-" data-lang="">The remaining values.
+</code></pre></div>
+<p>Before the update of the values, which consisted in turning the phone values into a list of strings, removing non-alphanumeric values, including area codes and including spaces only when it was appropriated, the classification was like this:
+<code>json
+{
+  &quot;missing_area_code&quot;: 72, 
+  &quot;wrong_separators&quot;: 2055, 
+  &quot;other&quot;: 41, 
+  &quot;ok&quot;: 151
+}
+</code>
+and after the update it turned out like this:
+<code>json
+{
+  &quot;missing_area_code&quot;: 18, 
+  &quot;wrong_separators&quot;: 0, 
+  &quot;other&quot;: 41, 
+  &quot;ok&quot;: 2260
+}
+</code>
+With an upgrade from 6.5% to 97.5% of &lsquo;ok&rsquo; values, I was content with the phones cleaning for this wrangling exercise.</p>
+
+<h3>pprint.pprint method not printing Unicode characters properly</h3>
+
+<p>This problem is not related to the data itself, but it was harming the wrangling process.
+When printing the results of some queries with the pprint.pprint method, characters out of the ascii table showed as their Unicode representation, making it hard to read.
+To solve this I had to instantiate my own printer, witch encoded unicode objects to utf-8, making it possible to read. Check the code below:</p>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">pprint</span>
+
+<span class="k">class</span> <span class="nc">MyPrettyPrinter</span><span class="p">(</span><span class="n">pprint</span><span class="o">.</span><span class="n">PrettyPrinter</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">maxlevels</span><span class="p">,</span> <span class="n">level</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="nb">unicode</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">(</span><span class="nb">object</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">'utf8'</span><span class="p">),</span> <span class="bp">True</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pprint</span><span class="o">.</span><span class="n">PrettyPrinter</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">maxlevels</span><span class="p">,</span> <span class="n">level</span><span class="p">)</span>
+</code></pre></div>
+<h2>Data Overview</h2>
+
+<p>This section contains basic statistics about the dataset and the MongoDB queries used to gather them. Some queries make use of the &lsquo;aggregate&rsquo; function.</p>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">pymongo</span> <span class="kn">import</span> <span class="n">MongoClient</span>
+
+<span class="k">def</span> <span class="nf">get_db</span><span class="p">(</span><span class="n">db_name</span><span class="p">):</span>
+    <span class="n">client</span> <span class="o">=</span> <span class="n">MongoClient</span><span class="p">(</span><span class="s">'localhost:27017'</span><span class="p">)</span>
+    <span class="n">db</span> <span class="o">=</span> <span class="n">client</span><span class="p">[</span><span class="n">db_name</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">db</span>
+
+<span class="k">def</span> <span class="nf">aggregate</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">pipeline</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">doc</span> <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">rio</span><span class="o">.</span><span class="n">aggregate</span><span class="p">(</span><span class="n">pipeline</span><span class="p">)]</span>
+
+<span class="n">db</span> <span class="o">=</span> <span class="n">get_db</span><span class="p">(</span><span class="s">'osm'</span><span class="p">)</span>
+</code></pre></div>
+<h3>File Sizes</h3>
+<div class="highlight"><pre><code class="language-" data-lang="">rio-de-janeiro_brazil.osm ........... 323 MB
+rio-de-janeiro_brazil.osm.json ...... 369 MB
+</code></pre></div>
+<h3>Elements Count</h3>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">db</span><span class="o">.</span><span class="n">rio</span><span class="o">.</span><span class="n">find</span><span class="p">()</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+</code></pre></div><div class="highlight"><pre><code class="language-" data-lang="">1737174
+</code></pre></div>
+<h3>Nodes Count</h3>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="c"># node count</span>
+<span class="n">db</span><span class="o">.</span><span class="n">rio</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="s">'type'</span><span class="p">:</span> <span class="s">'node'</span><span class="p">})</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+</code></pre></div><div class="highlight"><pre><code class="language-" data-lang="">1550716
+</code></pre></div>
+<h3>Ways Count</h3>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="c"># way count</span>
+<span class="n">db</span><span class="o">.</span><span class="n">rio</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="s">'type'</span><span class="p">:</span> <span class="s">'way'</span><span class="p">})</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+</code></pre></div><div class="highlight"><pre><code class="language-" data-lang="">186458
+</code></pre></div>
+<h3>Number of Distinct Users</h3>
+
+<p>This query uses the following &lsquo;aggregate&rsquo; method:</p>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">distinct_users</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s">'$group'</span><span class="p">:</span> <span class="p">{</span><span class="s">'_id'</span><span class="p">:</span> <span class="s">'$created.user'</span><span class="p">}},</span>
+    <span class="p">{</span><span class="s">'$group'</span><span class="p">:</span> <span class="p">{</span><span class="s">'_id'</span><span class="p">:</span> <span class="s">'Distinct users:'</span><span class="p">,</span> <span class="s">'count'</span><span class="p">:</span> <span class="p">{</span><span class="s">'$sum'</span><span class="p">:</span> <span class="mi">1</span><span class="p">}}}]</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">aggregate</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">distinct_users</span><span class="p">)</span>
+<span class="n">MyPrettyPrinter</span><span class="p">()</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</code></pre></div><div class="highlight"><pre><code class="language-" data-lang="">[{_id: Distinct users:, count: 1239}]
+</code></pre></div>
+<h3>Top 10 Contributing Users</h3>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">top_10_users</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s">'$group'</span><span class="p">:</span> <span class="p">{</span><span class="s">'_id'</span><span class="p">:</span> <span class="s">'$created.user'</span><span class="p">,</span> <span class="s">'count'</span><span class="p">:</span> <span class="p">{</span><span class="s">'$sum'</span><span class="p">:</span> <span class="mi">1</span><span class="p">}}},</span>
+    <span class="p">{</span><span class="s">'$sort'</span><span class="p">:</span> <span class="p">{</span><span class="s">'count'</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">}},</span>
+    <span class="p">{</span><span class="s">'$limit'</span><span class="p">:</span> <span class="mi">10</span><span class="p">}]</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">aggregate</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">top_10_users</span><span class="p">)</span>
+<span class="n">MyPrettyPrinter</span><span class="p">()</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</code></pre></div><div class="highlight"><pre><code class="language-" data-lang="">[{_id: Alexandrecw, count: 374621},
+ {_id: ThiagoPv, count: 186562},
+ {_id: smaprs_import, count: 185690},
+ {_id: AlNo, count: 169678},
+ {_id: Import Rio, count: 85129},
+ {_id: Geaquinto, count: 69987},
+ {_id: Nighto, count: 63148},
+ {_id: Thundercel, count: 55004},
+ {_id: Márcio Vínícius Pinheiro, count: 35985},
+ {_id: smaprs, count: 31507}]
+</code></pre></div>
+<h3>Users Appearing Only Once</h3>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">users_appearing_once</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s">'$group'</span><span class="p">:</span> <span class="p">{</span><span class="s">'_id'</span><span class="p">:</span> <span class="s">'$created.user'</span><span class="p">,</span> <span class="s">'count'</span><span class="p">:</span> <span class="p">{</span><span class="s">'$sum'</span><span class="p">:</span><span class="mi">1</span><span class="p">}}},</span>
+    <span class="p">{</span><span class="s">'$group'</span><span class="p">:</span> <span class="p">{</span><span class="s">'_id'</span><span class="p">:</span> <span class="s">'$count'</span><span class="p">,</span> <span class="s">'num_users'</span><span class="p">:</span> <span class="p">{</span><span class="s">'$sum'</span><span class="p">:</span><span class="mi">1</span><span class="p">}}},</span>
+    <span class="p">{</span><span class="s">'$sort'</span><span class="p">:</span> <span class="p">{</span><span class="s">'_id'</span><span class="p">:</span> <span class="mi">1</span><span class="p">}},</span>
+    <span class="p">{</span><span class="s">'$limit'</span><span class="p">:</span> <span class="mi">1</span><span class="p">}]</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">aggregate</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">users_appearing_once</span><span class="p">)</span>
+<span class="n">MyPrettyPrinter</span><span class="p">()</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</code></pre></div><div class="highlight"><pre><code class="language-" data-lang="">[{_id: 1, num_users: 274}]
+</code></pre></div>
+<h2>Aditional Ideas</h2>
+
+<h3>City validation based on postcodes</h3>
+
+<p>The city and postcode values could be crosschecked when inputing a new address. Most countries have public APIs to retrieve addresses from postcodes, so it could be done, with the help of contributors around the world.
+This improvement could prevent a lot of wrong data inputs - there are many examples in the examined dataset - and it would make the process of analyzing data related to cities considerably easier and more accurate. It would definitely cause a positive impact which would affect users througout the world.
+On the other hand, a change like this decreases the freedom of the user when inputing new addresses, since data could only be submitted if it was in accordance with the crosschecked value from another data source. These positive and negative impacts should be weighted before implementing this kind of improvement to the process.</p>
+
+<h3>Phone format validator</h3>
+
+<p>The Open Street Map input tool could have a phone format validator, varying from country to country, to avoid such a mess on the phones format 😉. It could also separate multiple phones with a standard separator, since it was one of the most difficult steps of the phone values wrangling.
+The fact that each country has a different standard format makes it difficult to implement this, but with the help of the open software community around Open Street Map it could be done.
+Again, it would decrease the freedom of the user inputing the data, since the phone format would have to be validated to the standards. And every time the standards change, the validators would have to be updated, causing some extra work that does not take place today.</p>
+
+<h3>Variety.js</h3>
+
+<p>The open-source tool Variety (<a href="https://github.com/variety/variety">https://github.com/variety/variety</a>) allows the user get a sense of how the data is structured in a MongoDB schema. It does so by showing the number of occurences for each key on documents returned by a query.
+It is a useful ally when analysing datasets like Open Street Map, which does not define an allowed key set.</p>
+
+<h3>Most Common Amenities</h3>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">most_common_amenities</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s">'$match'</span><span class="p">:</span> <span class="p">{</span><span class="s">'amenity'</span><span class="p">:</span> <span class="p">{</span><span class="s">'$exists'</span><span class="p">:</span> <span class="mi">1</span><span class="p">}}},</span>
+    <span class="p">{</span><span class="s">'$group'</span><span class="p">:</span> <span class="p">{</span><span class="s">'_id'</span><span class="p">:</span> <span class="s">'$amenity'</span><span class="p">,</span> <span class="s">'count'</span><span class="p">:</span> <span class="p">{</span><span class="s">'$sum'</span><span class="p">:</span> <span class="mi">1</span><span class="p">}}},</span>
+    <span class="p">{</span><span class="s">'$sort'</span><span class="p">:</span> <span class="p">{</span><span class="s">'count'</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">}},</span>
+    <span class="p">{</span><span class="s">'$limit'</span><span class="p">:</span> <span class="mi">10</span><span class="p">}]</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">aggregate</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">most_common_amenities</span><span class="p">)</span>
+<span class="n">MyPrettyPrinter</span><span class="p">()</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</code></pre></div><div class="highlight"><pre><code class="language-" data-lang="">[{_id: school, count: 1818},
+ {_id: bicycle_parking, count: 1409},
+ {_id: restaurant, count: 1080},
+ {_id: parking, count: 976},
+ {_id: fast_food, count: 890},
+ {_id: fuel, count: 678},
+ {_id: place_of_worship, count: 562},
+ {_id: bank, count: 534},
+ {_id: pub, count: 400},
+ {_id: pharmacy, count: 368}]
+</code></pre></div>
+<h3>Statistics on Bike Parking Capacity</h3>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">bike_parkings_capacity</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s">'$match'</span><span class="p">:</span> <span class="p">{</span><span class="s">'amenity'</span><span class="p">:</span> <span class="s">'bicycle_parking'</span><span class="p">,</span> <span class="s">'capacity'</span><span class="p">:</span> <span class="p">{</span><span class="s">'$exists'</span><span class="p">:</span> <span class="mi">1</span><span class="p">}}},</span>
+    <span class="p">{</span><span class="s">'$group'</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s">'_id'</span><span class="p">:</span> <span class="s">'Bike parking stats:'</span><span class="p">,</span>
+            <span class="s">'count'</span><span class="p">:</span> <span class="p">{</span><span class="s">'$sum'</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span>
+            <span class="s">'max'</span><span class="p">:</span> <span class="p">{</span><span class="s">'$max'</span><span class="p">:</span> <span class="s">'$capacity'</span><span class="p">},</span>
+            <span class="s">'min'</span><span class="p">:</span> <span class="p">{</span><span class="s">'$min'</span><span class="p">:</span> <span class="s">'$capacity'</span><span class="p">},</span>
+            <span class="s">'avg'</span><span class="p">:</span> <span class="p">{</span><span class="s">'$avg'</span><span class="p">:</span> <span class="s">'$capacity'</span><span class="p">}}}]</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">aggregate</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">bike_parkings_capacity</span><span class="p">)</span>
+<span class="n">MyPrettyPrinter</span><span class="p">()</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</code></pre></div><div class="highlight"><pre><code class="language-" data-lang="">[{_id: Bike parking stats:,
+  avg: 11.487840825350037,
+  count: 1357,
+  max: 700,
+  min: 1}]
+</code></pre></div>
+<h3>10 Most Common Cuisines</h3>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">top_10_cuisines</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s">'$match'</span><span class="p">:</span> <span class="p">{</span><span class="s">'amenity'</span><span class="p">:</span> <span class="s">'restaurant'</span><span class="p">,</span> <span class="s">'cuisine'</span><span class="p">:</span> <span class="p">{</span><span class="s">'$exists'</span><span class="p">:</span> <span class="mi">1</span><span class="p">}}},</span>
+    <span class="p">{</span><span class="s">'$group'</span><span class="p">:</span> <span class="p">{</span><span class="s">'_id'</span><span class="p">:</span> <span class="s">'$cuisine'</span><span class="p">,</span> <span class="s">'count'</span><span class="p">:</span> <span class="p">{</span><span class="s">'$sum'</span><span class="p">:</span> <span class="mi">1</span><span class="p">}}},</span>
+    <span class="p">{</span><span class="s">'$sort'</span><span class="p">:</span> <span class="p">{</span><span class="s">'count'</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">}},</span>
+    <span class="p">{</span><span class="s">'$limit'</span><span class="p">:</span> <span class="mi">10</span><span class="p">}]</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">aggregate</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">top_10_cuisines</span><span class="p">)</span>
+<span class="n">MyPrettyPrinter</span><span class="p">()</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</code></pre></div><div class="highlight"><pre><code class="language-" data-lang="">[{_id: pizza, count: 88},
+ {_id: regional, count: 83},
+ {_id: japanese, count: 38},
+ {_id: italian, count: 38},
+ {_id: steak_house, count: 20},
+ {_id: barbecue, count: 18},
+ {_id: brazilian, count: 16},
+ {_id: international, count: 12},
+ {_id: seafood, count: 8},
+ {_id: chinese, count: 8}]
+</code></pre></div>
+<h3>10 Most Common Religions</h3>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">most_common_religions</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s">'$match'</span><span class="p">:</span> <span class="p">{</span><span class="s">'amenity'</span><span class="p">:</span> <span class="s">'place_of_worship'</span><span class="p">,</span> <span class="s">'religion'</span><span class="p">:</span> <span class="p">{</span><span class="s">'$exists'</span><span class="p">:</span> <span class="mi">1</span><span class="p">}}},</span>
+    <span class="p">{</span><span class="s">'$group'</span><span class="p">:</span> <span class="p">{</span><span class="s">'_id'</span><span class="p">:</span> <span class="s">'$religion'</span><span class="p">,</span> <span class="s">'count'</span><span class="p">:</span> <span class="p">{</span><span class="s">'$sum'</span><span class="p">:</span> <span class="mi">1</span><span class="p">}}},</span>
+    <span class="p">{</span><span class="s">'$sort'</span><span class="p">:</span> <span class="p">{</span><span class="s">'count'</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">}},</span>
+    <span class="p">{</span><span class="s">'$limit'</span><span class="p">:</span> <span class="mi">10</span><span class="p">}]</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">aggregate</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">most_common_religions</span><span class="p">)</span>
+<span class="n">MyPrettyPrinter</span><span class="p">()</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</code></pre></div><div class="highlight"><pre><code class="language-" data-lang="">[{_id: christian, count: 495},
+ {_id: spiritualist, count: 7},
+ {_id: jewish, count: 6},
+ {_id: buddhist, count: 3},
+ {_id: religion_of_humanity, count: 1},
+ {_id: umbanda, count: 1},
+ {_id: macumba, count: 1},
+ {_id: muslim, count: 1},
+ {_id: seicho_no_ie, count: 1}]
+</code></pre></div>
+<p>The vast majority is christian. Among them, which are the most common denominations?</p>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">christian_denominations</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s">'$match'</span><span class="p">:</span> <span class="p">{</span><span class="s">'amenity'</span><span class="p">:</span> <span class="s">'place_of_worship'</span><span class="p">,</span> <span class="s">'religion'</span><span class="p">:</span> <span class="s">'christian'</span><span class="p">,</span> <span class="s">'denomination'</span><span class="p">:</span> <span class="p">{</span><span class="s">'$exists'</span><span class="p">:</span> <span class="mi">1</span><span class="p">}}},</span>
+    <span class="p">{</span><span class="s">'$group'</span><span class="p">:</span> <span class="p">{</span><span class="s">'_id'</span><span class="p">:</span> <span class="s">'$denomination'</span><span class="p">,</span> <span class="s">'count'</span><span class="p">:</span> <span class="p">{</span><span class="s">'$sum'</span><span class="p">:</span> <span class="mi">1</span><span class="p">}}},</span>
+    <span class="p">{</span><span class="s">'$sort'</span><span class="p">:</span> <span class="p">{</span><span class="s">'count'</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">}},</span>
+    <span class="p">{</span><span class="s">'$limit'</span><span class="p">:</span> <span class="mi">10</span><span class="p">}]</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">aggregate</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">christian_denominations</span><span class="p">)</span>
+<span class="n">MyPrettyPrinter</span><span class="p">()</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</code></pre></div><div class="highlight"><pre><code class="language-" data-lang="">[{_id: catholic, count: 157},
+ {_id: baptist, count: 33},
+ {_id: roman_catholic, count: 31},
+ {_id: evangelical, count: 27},
+ {_id: spiritist, count: 20},
+ {_id: pentecostal, count: 19},
+ {_id: protestant, count: 14},
+ {_id: methodist, count: 10},
+ {_id: presbyterian, count: 3},
+ {_id: assemblies_of_god, count: 2}]
+</code></pre></div>
+<h3>Fast-food Sites Near the Sugar Loaf</h3>
+
+<p>Consider you are visiting the Sugar Loaf in Rio and suddenly you are starving! Where to go?
+MongoDB Geospacial Index to the rescue!</p>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">pymongo</span> <span class="kn">import</span> <span class="n">GEO2D</span>
+
+<span class="n">db</span><span class="o">.</span><span class="n">rio</span><span class="o">.</span><span class="n">create_index</span><span class="p">([(</span><span class="s">'pos'</span><span class="p">,</span> <span class="n">GEO2D</span><span class="p">)])</span>
+
+<span class="n">sugar_loaf</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">rio</span><span class="o">.</span><span class="n">find_one</span><span class="p">({</span><span class="s">'name'</span><span class="p">:</span> <span class="s">'Pão de Açúcar'</span><span class="p">,</span> <span class="s">'tourism'</span><span class="p">:</span> <span class="s">'attraction'</span><span class="p">})</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">rio</span><span class="o">.</span><span class="n">find</span><span class="p">(</span>
+    <span class="p">{</span><span class="s">'pos'</span><span class="p">:</span> <span class="p">{</span><span class="s">'$near'</span><span class="p">:</span> <span class="n">sugar_loaf</span><span class="p">[</span><span class="s">'pos'</span><span class="p">]},</span> <span class="s">'amenity'</span><span class="p">:</span> <span class="s">'fast_food'</span><span class="p">},</span>
+    <span class="p">{</span><span class="s">'_id'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s">'name'</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s">'cuisine'</span><span class="p">:</span> <span class="mi">1</span><span class="p">})</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="n">MyPrettyPrinter</span><span class="p">()</span><span class="o">.</span><span class="n">pprint</span><span class="p">([</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">result</span><span class="p">])</span>
+</code></pre></div><div class="highlight"><pre><code class="language-" data-lang="">[{cuisine: corn, name: Tino},
+ {cuisine: sandwich, name: Max},
+ {cuisine: popcorn, name: França}]
+</code></pre></div>
+<p>Luckily there are Tino&rsquo;s corn, Max&rsquo;s sandwich and França&rsquo;s popcorn to satisfy your hunger!</p>
+
+<h3>Conclusion</h3>
+
+<p>Data inserted by humans is almost certain to show inconsistencies. And even though a big part of it is inserted by bots, different bots may insert data using different patterns, and the inconsistency remains. On the other hand, this freedom on the data input grants a lot of flexibility to users, and because of that, the representation of the map may be even more faithful to the real world than if there were key constraints or limitations.</p>
+
+<p>Anyway, for the purposes of this wrangling exercise the data has been well cleaned.</p>
+
+<h3>References:</h3>
+
+<h4>pprint Unicode</h4>
+
+<ul>
+<li><a href="http://stackoverflow.com/questions/10883399/unable-to-encode-decode-pprint-output">http://stackoverflow.com/questions/10883399/unable-to-encode-decode-pprint-output</a></li>
+</ul>
+
+<h4>MongoDB Geospacial Index</h4>
+
+<ul>
+<li><a href="https://docs.mongodb.com/v3.2/tutorial/build-a-2d-index/">https://docs.mongodb.com/v3.2/tutorial/build-a-2d-index/</a></li>
+<li><a href="https://docs.mongodb.com/v3.2/tutorial/query-a-2d-index/">https://docs.mongodb.com/v3.2/tutorial/query-a-2d-index/</a></li>
+<li><a href="http://api.mongodb.com/python/current/api/pymongo/collection.html?_ga=1.25837502.2095208423.1476211996#pymongo.collection.Collection.create_index">http://api.mongodb.com/python/current/api/pymongo/collection.html?_ga=1.25837502.2095208423.1476211996#pymongo.collection.Collection.create_index</a></li>
+</ul>
+
+<h4>Variety Open Source Tool</h4>
+
+<ul>
+<li><a href="https://github.com/variety/variety">https://github.com/variety/variety</a></li>
+</ul>
+
+  </div>
+
+</article>
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Luiz Schiller</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li>Luiz Schiller</li>
+          <li><a href="mailto:schillerbr@gmail.com">schillerbr@gmail.com</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <ul class="social-media-list">
+          
+
+          
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p>Data Science by Luiz Schiller</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  <!-- JS -->
+  <!-- inject:js -->
+  <script src="/assets/javascript/index.js"></script>
+  <!-- endinject -->
+
+  </body>
+
+</html>
