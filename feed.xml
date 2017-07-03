@@ -1,4 +1,221 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://www.luizschiller.com/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.4.0">Jekyll</generator><link href="http://www.luizschiller.com/feed.xml" rel="self" type="application/atom+xml" /><link href="http://www.luizschiller.com/" rel="alternate" type="text/html" /><updated>2017-02-02T14:18:55-02:00</updated><id>http://www.luizschiller.com//</id><title type="html">Luiz Schiller</title><subtitle>Thoughts and projects regarding Data Science</subtitle><author><name>Luiz Gustavo Schiller</name><email>schillerbr@gmail.com</email><uri>http://www.luizschiller.com</uri></author><entry><title type="html">Investigating the Enron Fraud with Machine Learning</title><link href="http://www.luizschiller.com/enron/" rel="alternate" type="text/html" title="Investigating the Enron Fraud with Machine Learning" /><published>2016-12-22T00:00:00-02:00</published><updated>2016-12-22T00:00:00-02:00</updated><id>http://www.luizschiller.com/enron</id><content type="html" xml:base="http://www.luizschiller.com/enron/">&lt;h4&gt;Udacity Data Analyst Nanodegree&lt;/h4&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://luizschiller.com/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.4.0">Jekyll</generator><link href="http://luizschiller.com/feed.xml" rel="self" type="application/atom+xml" /><link href="http://luizschiller.com/" rel="alternate" type="text/html" /><updated>2017-07-03T15:34:46+01:00</updated><id>http://luizschiller.com//</id><title type="html">Luiz Schiller</title><subtitle>Thoughts and projects on Data Science</subtitle><author><name>Luiz Gustavo Schiller</name><email>schillerbr@gmail.com</email><uri>http://luizschiller.com</uri></author><entry><title type="html">Make Effective Data Visualisation</title><link href="http://luizschiller.com/data-visualisation/" rel="alternate" type="text/html" title="Make Effective Data Visualisation" /><published>2017-05-04T00:00:00+01:00</published><updated>2017-05-04T00:00:00+01:00</updated><id>http://luizschiller.com/data-visualisation</id><content type="html" xml:base="http://luizschiller.com/data-visualisation/">&lt;h1&gt;Flight Performances for each Carrier in 2016&lt;/h1&gt;
+
+&lt;p&gt;The code for this vis can be found &lt;a href=&quot;https://github.com/schiller/flight-delays-visualization&quot; target=&quot;_blank&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;And you can check it out &lt;a href=&quot;https://bl.ocks.org/schiller/raw/8f340fe633cfdc7346b51058f36dada7/&quot; target=&quot;_blank&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://bl.ocks.org/schiller/raw/8f340fe633cfdc7346b51058f36dada7/&quot; alt=&quot;Visualisation preview&quot; target=&quot;_blank&quot;&gt;&lt;img src=&quot;/assets/images/make-effective-data-visualisation/preview.png&quot;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2&gt;Summary&lt;/h2&gt;
+
+&lt;p&gt;The chart shows the monthly percentages of flight delays and cancellations/diversions for each carrier in the year of 2016. The carriers are sorted by overall delay performance, and the total number of flights for each one is also depicted.&lt;/p&gt;
+
+&lt;h2&gt;Design&lt;/h2&gt;
+
+&lt;p&gt;I chose to draw a main stacked bar chart with the following visual encodings:
+- The ratio between delayed or cancelled/diverted and total flights is represented vertically on the y axis;
+- Months are displayed horizontally on the x axis;
+- Delays and cancellations/diversions are represented by different colors;&lt;/p&gt;
+
+&lt;p&gt;There is also a secondary bar chart with the following visual encodings:
+- Carrier codes are displayed vertically;
+- Total flights for each carrier are represented by the lenghts of the horizontal bars.&lt;/p&gt;
+
+&lt;p&gt;At first I made the stacked bars show the number of delayed flights, however, the x axis scale changed too much between carriers, so I changed it to show ratios, so that the scales would be comparable.
+I chose not to show &amp;ldquo;on time&amp;rdquo; flights on the chart, so I could zoom in the scale, allowing a better visualization of the delays and cancellations/diversions.
+The horizontal bars on the secondary chart were chosen so that visualizers could reason about the number of flights each carrier had, and also to make it possible to order carriers by overall performance. This way the order of bars contributes to the chart storytelling.&lt;/p&gt;
+
+&lt;p&gt;After collecting feedback I changed the following:
+- Assured the order of the months also on Firefox;
+- Changed the chart title from &amp;ldquo;2016 Flight Delays by Cause&amp;rdquo; to &amp;ldquo;Flight Performances for each Carrier in 2016&amp;rdquo;, and then to &amp;ldquo;Which air carrier had the worst performance in 2016?&amp;rdquo;;
+- Added a &amp;ldquo;References&amp;rdquo; section to communicate the source of the dataset;
+- Changed the y axis label from &amp;ldquo;Ratio&amp;rdquo; to &amp;ldquo;Flights Ratio&amp;rdquo;, and made it show percentual values;
+- Made the x axis of the secondary bar chart visible, to make it clearer that it was also a chart;
+- Fixed the height of the stacked bar chart, so that the &amp;ldquo;Month&amp;rdquo; label would be visible;
+- Switched months labels to abbreviations instead of numbers;
+- Stopped showing delays divided into causes, and instead displayed only total delays;
+- Aggregated cancellations and diversions;
+- Changed the animation instructions message into a play/pause clickable button;
+- Made the animation stop at the end of the first cycle;
+- Changed from carrier names to codes on the secondary horizontal bar chart y axis;
+- Updated the secondary horizontal barchart colors to grayscale.&lt;/p&gt;
+
+&lt;h3&gt;Chart Versions&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://bl.ocks.org/schiller/raw/8f340fe633cfdc7346b51058f36dada7/&quot;&gt;Current&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://bl.ocks.org/schiller/raw/ed5ea5c6199d2700d2c0458d5a8079e5/&quot;&gt;Second&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://bl.ocks.org/schiller/raw/7eb7e5f8236f5820f4b63e268a541884/&quot;&gt;First&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2&gt;Feedback&lt;/h2&gt;
+
+&lt;h3&gt;Laurent de Vito&lt;/h3&gt;
+
+&lt;p&gt;&amp;ldquo;Hi,
+Interestingly, in Firefox, the months are labeled 12,7,8,&amp;hellip; whereas they are correctly labeled in Chromium, but usually, we cannot do much about it.
+I find the title a bit misleading since you report not only the flights that were delayed but also those that were canceled.
+Furthermore, could you please cite your sources ?
+Overall, nicely done!&amp;rdquo;&lt;/p&gt;
+
+&lt;h3&gt;Morgana Secco (my wife)&lt;/h3&gt;
+
+&lt;p&gt;&amp;ldquo;The y axis show a ratio between what?
+You should make it clearer that the horizontal bars on the right display the total flights for each carrier.
+There is no month label on the x axis.&amp;rdquo;&lt;/p&gt;
+
+&lt;h3&gt;tianchuanting&lt;/h3&gt;
+
+&lt;p&gt;&amp;ldquo;Hi Luiz,&lt;/p&gt;
+
+&lt;p&gt;After spending a minute or two looking at your visualisation, my impression is that it is a very well made visualization. I especially like the small details you put into it, like the tooltip and animated guideline. And here is a list of feedback for you consideration.&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;I had some difficulty understanding what the vertical axis &amp;lsquo;flight delay&amp;rsquo; ratio means. Maybe using something like % of delayed flight might be intuitive.&lt;/li&gt;
+&lt;li&gt;Similarly, It took me a while to get what the 1-12 on the horizontal axis is presenting, maybe using month abbrev (Jan, Feb etc) instead will be a better idea.
+LT&amp;rdquo;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3&gt;John Enyeart&lt;/h3&gt;
+
+&lt;p&gt;&amp;ldquo;
+- It would probably be easier to read if you used month names instead of the numbers 1-12 on your x-axis. &lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;The biggest cause of delay is &amp;quot;NAS&amp;rdquo;, and I have no idea what that is, so an explanation would be nice.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;You might also consider putting in the option to switch the y-axis between ratio and number of flights.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Not sure how I feel about the stacked bar chart in terms of readability. Take a look at the following articles:&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.storytellingwithdata.com/blog/2012/11/to-stack-or-not-to-stack&quot;&gt;storytellingwithdata.com - to stack or not to stack&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://solomonmessing.wordpress.com/2014/10/11/when-to-use-stacked-barcharts/&quot;&gt;https://solomonmessing.wordpress.com/2014/10/11/when-to-use-stacked-barcharts/&lt;/a&gt;&amp;ldquo;&lt;/p&gt;
+
+&lt;h3&gt;martin-martin&lt;/h3&gt;
+
+&lt;p&gt;&amp;quot;Hello @luizschiller!&lt;/p&gt;
+
+&lt;p&gt;That&amp;rsquo;s a great visualization you are working on here! I agree that it seems you&amp;rsquo;re putting effort in the details, and it shows : )&lt;/p&gt;
+
+&lt;p&gt;Here&amp;rsquo;s my feedback:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;The encoding of the amount of flights that the airlines each have is very innovative and I haven&amp;rsquo;t seen this around yet. Great idea :+1: - looks really interesting!&lt;/li&gt;
+&lt;li&gt;I was initially confused about what is going on in the graph since it was changing so quickly. I generally prefer if I have the choice to first orient in a visualisation before starting the reel. If you want to have it running right when the user accesses the page, maybe you could make the instructional message on how to start/stop it more obvious (e.g. it could be presented as a clickable button!)&lt;/li&gt;
+&lt;li&gt;The tickmarks under the months are different than the ones in the rest of your visualisation. Generally you display ticks where the value descriptions are - but here they are in between the data points. I&amp;rsquo;d suggest to keep this consistent and simply move the ticks into the middle of the columns&lt;/li&gt;
+&lt;li&gt;What is the NAS value about? Most of the options in the legend on top are somewhat self-explanatory, however not all of them are. And without the context of the fact that they are reasons for delays, the correct interpretation becomes even more difficult. A good legend should also have a title explaining what it&amp;rsquo;s explaining. - Potentially the graphs title could also fulfill this function, but currently it says &amp;quot;Flight Performances&amp;rdquo; (which is overall better fitting, yet doesn&amp;rsquo;t explain that you&amp;rsquo;re displaying &amp;ldquo;Reasons for flight delays&amp;rdquo;, encoded with the different colors).&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Hope this helps, and great job!
+Keep it up and you already have a great piece of data viz! : ) &amp;ldquo;&lt;/p&gt;
+
+&lt;h2&gt;Resources&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;http://dimplejs.org/examples_viewer.html?id=bars_vertical_stacked&quot;&gt;http://dimplejs.org/examples_viewer.html?id=bars_vertical_stacked&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://dimplejs.org/advanced_examples_viewer.html?id=advanced_storyboard_control&quot;&gt;http://dimplejs.org/advanced_examples_viewer.html?id=advanced_storyboard_control&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://codepen.io/mistkaes/pen/WvPrJL&quot;&gt;https://codepen.io/mistkaes/pen/WvPrJL&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Luiz Gustavo Schiller</name><email>schillerbr@gmail.com</email><uri>http://luizschiller.com</uri></author><category term="dimplejs" /><category term="d3js" /><category term="visualisation" /><category term="design-principles" /><category term="visual-encodings" /><category term="HTML" /><category term="CSS" /><category term="SVG" /></entry><entry><title type="html">Design an A/B Test</title><link href="http://luizschiller.com/ab-test/" rel="alternate" type="text/html" title="Design an A/B Test" /><published>2017-04-17T00:00:00+01:00</published><updated>2017-04-17T00:00:00+01:00</updated><id>http://luizschiller.com/ab-test</id><content type="html" xml:base="http://luizschiller.com/ab-test/">&lt;h2&gt;Experiment Design&lt;/h2&gt;
+
+&lt;p&gt;This project was made as part of Udacity&amp;rsquo;s Data Analyst Nanodegree.&lt;/p&gt;
+
+&lt;p&gt;The project instructions can be found here: &lt;a href=&quot;https://docs.google.com/document/u/1/d/1aCquhIqsUApgsxQ8-SQBAigFDcfWVVohLEXcV6jWbdI/pub?embedded=True&quot;&gt;https://docs.google.com/document/u/1/d/1aCquhIqsUApgsxQ8-SQBAigFDcfWVVohLEXcV6jWbdI/pub?embedded=True&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3&gt;Metric Choice&lt;/h3&gt;
+
+&lt;h4&gt;Invariant Metrics:&lt;/h4&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Number of Cookies; &lt;/li&gt;
+&lt;li&gt;Number of Clicks;&lt;/li&gt;
+&lt;li&gt;Click-through Probability&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Visiting the course overview page or clicking on the “start free trial” button happen before the free trial screener is triggered, so they must behave equally on control and experiment groups.&lt;/p&gt;
+
+&lt;h4&gt;Evaluation Metrics:&lt;/h4&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Gross Conversion: enrollments / clicks should be a good evaluation metric. It measures if the proposed change is really discouraging users who inform less than 5 hours of study per week from enrolling. This metric is expected to decrease significantly in order to launch the experiment.&lt;/li&gt;
+&lt;li&gt;Net Conversion: payments / clicks should also be a good evaluation metric. It measures if the free trial screener is changing the proportion of students who remain enrolled past the 14-day boundary after starting a free trial. This metric is expected not to decrease significantly in order to launch the experiment, since the students who complete payments usually dedicate 5 or more hours per week to studying.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4&gt;Unused Metrics:&lt;/h4&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Number of user-ids: the number of enrollments could potentially be used as an evaluation metric, but since we have the gross conversion, it would be redundant, and also, comparing raw numbers of user-ids assumes control and experiment groups are equally sized, which is not always true.&lt;/li&gt;
+&lt;li&gt;Retention: payments / enrollments would be a perfect metric for this experiment, except for the experiment size needed to make a powerful test. At least 17 weeks would be needed in order to complete the experiment, which is too much. This metric would be expected to show a significant increase in order to launch the experiment.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;Measuring Standard Deviation&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Gross Conversion: 0.0202&lt;/li&gt;
+&lt;li&gt;Net Conversion: 0.0156&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;In both cases, the empirical and analytical variabilities are expected to be comparable, because the unit of diversion (cookies) and the unit of analysis (cookies) are the same.&lt;/p&gt;
+
+&lt;h3&gt;Sizing&lt;/h3&gt;
+
+&lt;h4&gt;Number of Samples vs. Power&lt;/h4&gt;
+
+&lt;p&gt;I’m not using Bonferroni correction, since the metrics are correlated, and also because I need a specific combination of results of all metrics in order to recommend a change, so it would be too conservative. 
+Number of Pageviews: 679300.&lt;/p&gt;
+
+&lt;h4&gt;Duration vs. Exposure&lt;/h4&gt;
+
+&lt;p&gt;I would divert 100% of the traffic, which would lead to 17 days.
+The experiment introduces a popup on the site, which is one more step in the way of enrolling in a free trial. This change does not present physical, psychological, emotional, social or economic risks above minimal risk.
+If a student enrolls in the free trial, his data becomes personally identifiable, so there has to be an agreement on privacy policies towards the data, even though the collected information is not sensitive and does not involve political attitudes, financial or health data, for example.
+Based on the factors cited above, I chose to divert all traffic.&lt;/p&gt;
+
+&lt;h2&gt;Experiment Analysis&lt;/h2&gt;
+
+&lt;h3&gt;Sanity Checks&lt;/h3&gt;
+
+&lt;p&gt;Number of Cookies: CI = (0.4988, 0.5012), Observed = 0.5006, pass&lt;/p&gt;
+
+&lt;p&gt;Number of Clicks on “Start free trial”: CI = (0.4959, 0.5041), Observed = 0.5005, pass&lt;/p&gt;
+
+&lt;p&gt;Click-through-probability on “Start free trial”: CI = (-0.0013, 0.0013), Observed = 0.0001, pass&lt;/p&gt;
+
+&lt;h3&gt;Result Analysis&lt;/h3&gt;
+
+&lt;h4&gt;Effect Size Tests&lt;/h4&gt;
+
+&lt;p&gt;Gross Conversion: CI = (-0.0291, -0.0120), dmin = 0.0100, statistically and practically significant.&lt;/p&gt;
+
+&lt;p&gt;Net Conversion: CI = (-0.0116, 0.0019), dmin = 0.0075, not statistically nor practically significant.&lt;/p&gt;
+
+&lt;h4&gt;Sign Tests&lt;/h4&gt;
+
+&lt;p&gt;Gross Conversion: p-value = 0.0026, statistically significant.&lt;/p&gt;
+
+&lt;p&gt;Net Conversion: p-value = 0.6776, not statistically significant.&lt;/p&gt;
+
+&lt;h4&gt;Summary&lt;/h4&gt;
+
+&lt;p&gt;The Bonferroni correction is designed to reduce risks of false positives when, in a set of tests, the launch of an experiment is conditioned to any of them matching my expectations. In my case, I need all of my tests to match my expectations in order to launch the experiment, so I’m not using the Bonferroni correction.
+There were no discrepancies between the effect size and the sign tests.&lt;/p&gt;
+
+&lt;h3&gt;Recommendation&lt;/h3&gt;
+
+&lt;p&gt;The encountered results for the evaluation metrics were:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Gross Conversion: in order to launch the experiment, this metric should present a statistical and practical decrease, which were the results found on the tests.&lt;/li&gt;
+&lt;li&gt;Net Conversion: the confidence interval found for the effect size on net conversion includes the negative practical significance threshold. It means that there is a chance, for an alpha of 0.05, that this metric presented a practically significant decrease. It would be possible to repeat the experiment with more power, but it is unlikely that this trend would change.
+Since I need both metrics to match my expectations and I cannot conclude that the net conversion has not decreased, my recommendation is not to launch the experiment.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2&gt;Follow-Up Experiment&lt;/h2&gt;
+
+&lt;p&gt;One follow-up experiment that could reduce early cancellations could be the following: when a student clicked on the “start free trial” button, a message would appear informing him that the course usually requires 5 hours of dedication per week or more, and he would be requested to mark the hours he would commit to the course on his agenda or calendar in order to proceed. There is going to be a checkbox saying “I have reserved the hours I will commit to the course”, and a “next” button that would be disabled until the checkbox was checked. The next button would then proceed to the usual checkout process.
+This may seem similar to the attempted experiment, but it has an important difference: it does not suggest students to try the free course materials instead of engaging on the free trial. Maybe this fact could make a significant difference on the observed effects.
+The hypothesis is that this new change might cause some students, who would otherwise not do so, to organize themselves and reserve some hours per week to study. This would, thus, reduce the number of students who abandon the free trial without significantly reducing the number of students who eventually complete the course.
+The metrics would be gross and net conversions. They measure respectively the number of enrollments and the number of payments per click on the “start free trial” button. Combined, they can express if the hypothesis holds true. Also, as calculated on the attempted experiment, they are feasible in terms of experiment size.
+The unit of diversion would be cookie, and the invariant metrics could be the number of course pageviews, and the number of clicks on “start free trial”.&lt;/p&gt;</content><author><name>Luiz Gustavo Schiller</name><email>schillerbr@gmail.com</email><uri>http://luizschiller.com</uri></author><category term="ab-test" /><category term="confidence-intervals" /><category term="binomial-distribution" /><category term="hypothesis-testing" /><category term="variability-of-different-metrics" /><category term="sign-test" /></entry><entry><title type="html">Investigating the Enron Fraud with Machine Learning</title><link href="http://luizschiller.com/enron/" rel="alternate" type="text/html" title="Investigating the Enron Fraud with Machine Learning" /><published>2016-12-22T00:00:00+00:00</published><updated>2016-12-22T00:00:00+00:00</updated><id>http://luizschiller.com/enron</id><content type="html" xml:base="http://luizschiller.com/enron/">&lt;h4&gt;Udacity Data Analyst Nanodegree&lt;/h4&gt;
 
 &lt;h2&gt;Overview&lt;/h2&gt;
 
@@ -576,7 +793,7 @@ Pipeline(steps=[('scaler', StandardScaler(copy=True, with_mean=True, with_std=Tr
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&quot;http://scikit-learn.org/&quot;&gt;http://scikit-learn.org/&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;http://sebastianraschka.com/Articles/2014_about_feature_scaling.html&quot;&gt;http://sebastianraschka.com/Articles/2014_about_feature_scaling.html&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Luiz Gustavo Schiller</name><email>schillerbr@gmail.com</email><uri>http://www.luizschiller.com</uri></author><category term="python" /><category term="machine-learning" /><category term="scikit-learn" /><category term="pandas" /><category term="numpy" /></entry><entry><title type="html">Exploring and Summarizing White Wine Data with R</title><link href="http://www.luizschiller.com/white-wine/" rel="alternate" type="text/html" title="Exploring and Summarizing White Wine Data with R" /><published>2016-11-07T00:00:00-02:00</published><updated>2016-11-07T00:00:00-02:00</updated><id>http://www.luizschiller.com/white-wine</id><content type="html" xml:base="http://www.luizschiller.com/white-wine/">&lt;h4&gt;Udacity Data Analyst Nanodegree&lt;/h4&gt;
+&lt;/ul&gt;</content><author><name>Luiz Gustavo Schiller</name><email>schillerbr@gmail.com</email><uri>http://luizschiller.com</uri></author><category term="python" /><category term="machine-learning" /><category term="scikit-learn" /><category term="pandas" /><category term="numpy" /></entry><entry><title type="html">Exploring and Summarizing White Wine Data with R</title><link href="http://luizschiller.com/white-wine/" rel="alternate" type="text/html" title="Exploring and Summarizing White Wine Data with R" /><published>2016-11-07T00:00:00+00:00</published><updated>2016-11-07T00:00:00+00:00</updated><id>http://luizschiller.com/white-wine</id><content type="html" xml:base="http://luizschiller.com/white-wine/">&lt;h4&gt;Udacity Data Analyst Nanodegree&lt;/h4&gt;
 
 &lt;h3&gt;Project Overview&lt;/h3&gt;
 
@@ -999,7 +1216,7 @@ Pipeline(steps=[('scaler', StandardScaler(copy=True, with_mean=True, with_std=Tr
 &lt;ul&gt;
 &lt;li&gt;&lt;p&gt;P. Cortez, A. Cerdeira, F. Almeida, T. Matos and J. Reis. Modeling wine preferences by data mining from physicochemical properties. In Decision Support Systems, Elsevier, 47(4):547-553. ISSN: 0167-9236. Available at: [@Elsevier] &lt;a href=&quot;http://dx.doi.org/10.1016/j.dss.2009.05.016&quot;&gt;http://dx.doi.org/10.1016/j.dss.2009.05.016&lt;/a&gt; [Pre-press (pdf)] &lt;a href=&quot;http://www3.dsi.uminho.pt/pcortez/winequality09.pdf&quot;&gt;http://www3.dsi.uminho.pt/pcortez/winequality09.pdf&lt;/a&gt; [bib] &lt;a href=&quot;http://www3.dsi.uminho.pt/pcortez/dss09.bib&quot;&gt;http://www3.dsi.uminho.pt/pcortez/dss09.bib&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Acids_in_wine&quot;&gt;https://en.wikipedia.org/wiki/Acids_in_wine&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Luiz Gustavo Schiller</name><email>schillerbr@gmail.com</email><uri>http://www.luizschiller.com</uri></author><category term="R" /><category term="EDA" /><category term="vizualization" /></entry><entry><title type="html">OpenStreetMap Data Wrangling</title><link href="http://www.luizschiller.com/openstreetmap/" rel="alternate" type="text/html" title="OpenStreetMap Data Wrangling" /><published>2016-10-08T00:00:00-03:00</published><updated>2016-10-08T00:00:00-03:00</updated><id>http://www.luizschiller.com/openstreetmap</id><content type="html" xml:base="http://www.luizschiller.com/openstreetmap/">&lt;h4&gt;Udacity Data Analyst Nanodegree&lt;/h4&gt;
+&lt;/ul&gt;</content><author><name>Luiz Gustavo Schiller</name><email>schillerbr@gmail.com</email><uri>http://luizschiller.com</uri></author><category term="R" /><category term="EDA" /><category term="vizualization" /></entry><entry><title type="html">OpenStreetMap Data Wrangling</title><link href="http://luizschiller.com/openstreetmap/" rel="alternate" type="text/html" title="OpenStreetMap Data Wrangling" /><published>2016-10-08T00:00:00+01:00</published><updated>2016-10-08T00:00:00+01:00</updated><id>http://luizschiller.com/openstreetmap</id><content type="html" xml:base="http://luizschiller.com/openstreetmap/">&lt;h4&gt;Udacity Data Analyst Nanodegree&lt;/h4&gt;
 
 &lt;h2&gt;Project Overview&lt;/h2&gt;
 
@@ -1388,7 +1605,7 @@ MongoDB Geospacial Index to the rescue!&lt;/p&gt;
 
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&quot;https://github.com/variety/variety&quot;&gt;https://github.com/variety/variety&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Luiz Gustavo Schiller</name><email>schillerbr@gmail.com</email><uri>http://www.luizschiller.com</uri></author><category term="python" /><category term="data-wrangling" /><category term="mongodb" /></entry><entry><title type="html">Investigating the Titanic Dataset with Python</title><link href="http://www.luizschiller.com/titanic/" rel="alternate" type="text/html" title="Investigating the Titanic Dataset with Python" /><published>2016-09-08T00:00:00-03:00</published><updated>2016-09-08T00:00:00-03:00</updated><id>http://www.luizschiller.com/titanic</id><content type="html" xml:base="http://www.luizschiller.com/titanic/">&lt;h4&gt;Udacity Data Analyst Nanodegree&lt;/h4&gt;
+&lt;/ul&gt;</content><author><name>Luiz Gustavo Schiller</name><email>schillerbr@gmail.com</email><uri>http://luizschiller.com</uri></author><category term="python" /><category term="data-wrangling" /><category term="mongodb" /></entry><entry><title type="html">Investigating the Titanic Dataset with Python</title><link href="http://luizschiller.com/titanic/" rel="alternate" type="text/html" title="Investigating the Titanic Dataset with Python" /><published>2016-09-08T00:00:00+01:00</published><updated>2016-09-08T00:00:00+01:00</updated><id>http://luizschiller.com/titanic</id><content type="html" xml:base="http://luizschiller.com/titanic/">&lt;h4&gt;Udacity Data Analyst Nanodegree&lt;/h4&gt;
 
 &lt;h3&gt;First Glance at Our Data&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;numpy&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;np&lt;/span&gt;
@@ -1988,7 +2205,7 @@ Name: Family, dtype: float64
 
 &lt;p&gt;To find out if the average fare was the same for men and women we must hypothesize that there was no difference, and then make a t-test to check if the difference is significative as this study suggests.&lt;/p&gt;
 
-&lt;p&gt;Thank you for reading!&lt;/p&gt;</content><author><name>Luiz Gustavo Schiller</name><email>schillerbr@gmail.com</email><uri>http://www.luizschiller.com</uri></author><category term="python" /><category term="pandas" /><category term="matplotlib" /></entry><entry><title type="html">Stroop Effect - Testing a Perceptual Phenomenon</title><link href="http://www.luizschiller.com/stroop-effect/" rel="alternate" type="text/html" title="Stroop Effect - Testing a Perceptual Phenomenon" /><published>2016-08-20T00:00:00-03:00</published><updated>2016-08-20T00:00:00-03:00</updated><id>http://www.luizschiller.com/stroop-effect</id><content type="html" xml:base="http://www.luizschiller.com/stroop-effect/">&lt;h4&gt;Udacity Data Analyst Nanodegree&lt;/h4&gt;
+&lt;p&gt;Thank you for reading!&lt;/p&gt;</content><author><name>Luiz Gustavo Schiller</name><email>schillerbr@gmail.com</email><uri>http://luizschiller.com</uri></author><category term="python" /><category term="pandas" /><category term="matplotlib" /></entry><entry><title type="html">Stroop Effect - Testing a Perceptual Phenomenon</title><link href="http://luizschiller.com/stroop-effect/" rel="alternate" type="text/html" title="Stroop Effect - Testing a Perceptual Phenomenon" /><published>2016-08-20T00:00:00+01:00</published><updated>2016-08-20T00:00:00+01:00</updated><id>http://luizschiller.com/stroop-effect</id><content type="html" xml:base="http://luizschiller.com/stroop-effect/">&lt;h4&gt;Udacity Data Analyst Nanodegree&lt;/h4&gt;
 
 &lt;h3&gt;Project Overview&lt;/h3&gt;
 
@@ -2050,4 +2267,4 @@ A similar experiment could be to show up or down arrows, randomly above or below
 
 &lt;h3&gt;REFERENCES:&lt;/h3&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Stroop_effect&quot;&gt;https://en.wikipedia.org/wiki/Stroop_effect&lt;/a&gt;&lt;/p&gt;</content><author><name>Luiz Gustavo Schiller</name><email>schillerbr@gmail.com</email><uri>http://www.luizschiller.com</uri></author><category term="excel" /><category term="t-test" /></entry></feed>
+&lt;p&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Stroop_effect&quot;&gt;https://en.wikipedia.org/wiki/Stroop_effect&lt;/a&gt;&lt;/p&gt;</content><author><name>Luiz Gustavo Schiller</name><email>schillerbr@gmail.com</email><uri>http://luizschiller.com</uri></author><category term="excel" /><category term="t-test" /></entry></feed>
